@@ -1,0 +1,3466 @@
+
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUMPTUBE - The Video Broadcast</title>
+    <link rel="shortcut icon" href="images/MT.png" type="image/png">
+    <style>
+      :root {
+        --primary-color: #FFA500; /* Фиолетовый */
+        --primary-light: #FFA500; /* Светло-фиолетовый */
+        --secondary-color: #ffffff; /* Белый фон */
+        --text-color: #333333; /* Тёмный текст */
+        --text-light: #666666; /* Серый текст */
+        --border-color: #e0e0e0; /* Светлая граница */
+        --hover-bg: #f5f0ff; /* Очень светлый фиолетовый для ховера */
+        --header-height: 60px;
+        --sidebar-width: 240px;
+      }
+
+      body {
+        font-family: "Roboto", Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+      }
+
+      /* #################### ХЕДЕР #################### */
+      header {
+        background-color: var(--secondary-color);
+        height: var(--header-height);
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .menu-toggle {
+        background: none;
+        border: none;
+        color: var(--text-color);
+        font-size: 20px;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+      }
+
+      .menu-toggle:hover {
+        background-color: var(--hover-bg);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .logo-icon {
+        color: var(--primary-color);
+        font-size: 28px;
+        margin-right: 8px;
+      }
+
+      .logo-text {
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+
+      .search-container {
+        flex-grow: 1;
+        max-width: 640px;
+        margin: 0 40px;
+        display: flex;
+      }
+
+      .search-input {
+        flex-grow: 1;
+        padding: 10px 16px;
+        border: 1px solid var(--border-color);
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        border-radius: 20px 0 0 20px;
+        font-size: 16px;
+        outline: none;
+      }
+
+      .search-button {
+        background-color: var(--primary-light);
+        border: 1px solid var(--primary-light);
+        border-left: none;
+        color: white;
+        border-radius: 0 20px 20px 0;
+        padding: 0 20px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .search-button:hover {
+        background-color: var(--primary-color);
+      }
+
+      .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        max-width: 640px;
+        background-color: white;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        display: none;
+      }
+
+      .search-result-item {
+        color: #000;
+        padding: 0.8rem 1rem;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+      }
+
+      .search-result-item:hover {
+        background-color: #f5f5f5;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .header-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        cursor: pointer;
+        color: var(--text-color);
+      }
+
+      .header-icon:hover {
+        background-color: var(--hover-bg);
+      }
+
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      /* #################### САЙДБАР #################### */
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--secondary-color);
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        bottom: 0;
+        overflow-y: auto;
+        padding: 12px 0;
+        border-right: 1px solid var(--border-color);
+        transition: transform 0.3s;
+        z-index: 90;
+      }
+
+      .sidebar-section {
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 12px;
+      }
+
+      .sidebar-item {
+        padding: 8px 24px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        border-radius: 10px;
+        margin: 4px 12px;
+        color: var(--text-color);
+      }
+
+      .sidebar-item:hover {
+        background-color: var(--hover-bg);
+      }
+
+      .sidebar-item.active {
+        background-color: var(--hover-bg);
+        font-weight: 500;
+        color: var(--primary-color);
+      }
+
+      .sidebar-item.active i {
+        color: var(--primary-color);
+      }
+
+      .sidebar-item i {
+        margin-right: 24px;
+        font-size: 20px;
+        color: var(--text-light);
+      }
+
+      .sidebar-title {
+        padding: 8px 24px;
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text-light);
+        text-transform: uppercase;
+      }
+
+      .sidebar-channel {
+        display: flex;
+        align-items: center;
+        padding: 8px 24px;
+        cursor: pointer;
+        border-radius: 10px;
+        margin: 4px 12px;
+        color: var(--text-color);
+      }
+
+      .sidebar-channel:hover {
+        background-color: var(--hover-bg);
+      }
+
+      .sidebar-channel img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        margin-right: 24px;
+      }
+
+      /* #################### ОСНОВНОЙ КОНТЕНТ #################### */
+      .main-content {
+        margin-left: var(--sidebar-width);
+        margin-top: var(--header-height);
+        padding: 20px;
+        transition: margin-left 0.3s;
+        background-color: var(--secondary-color);
+      }
+
+      .collapsed-sidebar .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .collapsed-sidebar .main-content {
+        margin-left: 0;
+      }
+
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 16px;
+      }
+
+      .video-card {
+        cursor: pointer;
+        background-color: var(--secondary-color);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s;
+        border: 1px solid var(--border-color);
+      }
+
+      .video-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1);
+      }
+
+      .thumbnail {
+        position: relative;
+        height: 0;
+        padding-bottom: 56.25%;
+        overflow: hidden;
+        background-color: #f0f0f0;
+      }
+
+      .thumbnail img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .video-duration {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+
+      .video-info {
+        padding: 12px;
+      }
+
+      .video-title {
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 14px;
+        line-height: 1.4;
+        color: var(--text-color);
+      }
+
+      .video-channel {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+        color: var(--text-light);
+        font-size: 12px;
+      }
+
+      .video-channel img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+
+      .video-stats {
+        display: flex;
+        color: var(--text-light);
+        font-size: 12px;
+      }
+
+      .video-stats span {
+        margin-right: 8px;
+      }
+
+      /* Страница видео */
+      .video-page {
+        display: flex;
+        flex-direction: column;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .video-player-container {
+        width: 100%;
+        background-color: #000;
+        margin-bottom: 1.5rem;
+      }
+
+      .video-player {
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%;
+        position: relative;
+      }
+
+      .video-player iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .video-description {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--border-color);
+      }
+
+      .video-actions {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .action-button {
+        display: flex;
+        align-items: center;
+        margin-right: 1.5rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+        font-size: 1rem;
+        color: var(--text-color);
+      }
+
+      .action-button.like.active {
+        color: var(--primary-color);
+      }
+
+      .action-button.dislike.active {
+        color: #666;
+      }
+
+      .action-button i {
+        margin-right: 0.5rem;
+      }
+
+      .comments-section {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+      }
+
+      .comment-form {
+        display: flex;
+        margin-bottom: 1.5rem;
+      }
+
+      .comment-form img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 1rem;
+      }
+
+      .comment-input {
+        flex-grow: 1;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+      }
+
+      .comment {
+        display: flex;
+        margin-bottom: 1.5rem;
+      }
+
+      .comment-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 1rem;
+      }
+
+      .comment-content {
+        flex-grow: 1;
+      }
+
+      .comment-author {
+        font-weight: bold;
+        margin-bottom: 0.3rem;
+      }
+
+      .comment-text {
+        margin-bottom: 0.5rem;
+      }
+
+      .comment-actions {
+        display: flex;
+        font-size: 0.8rem;
+        color: #666;
+      }
+
+      .comment-action {
+        margin-right: 1rem;
+        cursor: pointer;
+      }
+
+      .subscribe-button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: auto;
+        transition: background-color 0.2s;
+      }
+
+      .subscribe-button:hover {
+        background-color: var(--primary-light);
+      }
+
+      .subscribe-button.subscribed {
+        background-color: #666;
+      }
+
+      /* Адаптивность */
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+          width: 80%;
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .sidebar-visible .sidebar {
+          transform: translateX(0);
+        }
+
+        .search-container {
+          margin: 0 16px;
+        }
+      }
+
+      header {
+        background-color: var(--secondary-color);
+        height: var(--header-height);
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .menu-toggle {
+        background: none;
+        border: none;
+        color: var(--text-color);
+        font-size: 20px;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+      }
+
+      .menu-toggle:hover {
+        background-color: var(--hover-bg);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .logo-icon {
+        color: var(--primary-color);
+        font-size: 28px;
+        margin-right: 8px;
+      }
+
+      .logo-text {
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+
+      .search-container {
+        flex-grow: 1;
+        max-width: 640px;
+        margin: 0 40px;
+        display: flex;
+      }
+
+      .search-input {
+        flex-grow: 1;
+        padding: 10px 16px;
+        border: 1px solid var(--border-color);
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        border-radius: 20px 0 0 20px;
+        font-size: 16px;
+        outline: none;
+      }
+
+      .search-button {
+        background-color: var(--primary-light);
+        border: 1px solid var(--primary-light);
+        border-left: none;
+        color: white;
+        border-radius: 0 20px 20px 0;
+        padding: 0 20px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .search-button:hover {
+        background-color: var(--primary-color);
+      }
+
+      .sidebar .material-icons {
+        margin-right: 5px;
+      }
+
+      /* НОВЫЙ КОНТЕЙНЕР ДЛЯ CA и X */
+      .header-ca-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .ca-wrapper {
+        width: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: rgba(138, 43, 226, 0.1);
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 14px;
+      }
+
+      .ca-label {
+        font-weight: bold;
+        margin-right: 8px;
+        color: var(--primary-color);
+      }
+
+      .ca-address {
+        font-family: monospace;
+        margin-right: 8px;
+        color: var(--text-color);
+      }
+
+      .ca-copy {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 4px;
+      }
+
+      .x-icon {
+        color: var(--text-color);
+        font-size: 24px;
+        cursor: pointer;
+        transition: color 0.2s;
+        width: 25px;
+        height: 25px;
+      }
+
+      .x-icon img {
+        height: 25px;
+        width: 25px;
+      }
+
+      .x-icon:hover {
+        color: var(--primary-color);
+      }
+    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/all.min.css">
+  </head>
+  <body>
+    <!-- #################### ХЕДЕР #################### -->
+    <header>
+      <div class="header-left">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+          <span class="material-icons">menu</span>
+        </button>
+        <div class="logo" onclick="backToHome()">
+          <span class="material-icons logo-icon">play_circle_filled</span>
+          <span class="logo-text">PUMPTUBE</span>
+        </div>
+      </div>
+
+      <div class="search-container">
+        <input type="text" class="search-input" id="search-input" placeholder="Search for memecoin videos...">
+        <button class="search-button" onclick="performSearch()">
+          <span class="material-icons">search</span>
+        </button>
+        <div class="search-results" id="search-results"></div>
+      </div>
+
+      <div class="header-ca-container">
+        <div class="ca-wrapper">
+          <span class="ca-label">CA:</span>
+          <span class="ca-address">61GjB6jcYsmbuVfsLfTr6T2J2ftvJstgcQLWAMsVpump</span>
+          <button class="ca-copy" onclick="copyCA()">
+            <span class="material-icons">content_copy</span>
+          </button>
+        </div>
+        <a href="https://x.com/PUMPTUBE_videos" target="_blank" class="x-icon">
+          <img src="images/twit.png" alt="">
+        </a>
+      </div>
+    </header>
+
+    <!-- #################### САЙДБАР #################### -->
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-item active" onclick="showSection('home')">
+          <span class="material-icons">home</span>
+          <span>Home</span>
+        </div>
+        <div class="sidebar-item" onclick="showSection('trending')">
+          <span class="material-icons">local_fire_department</span>
+          <span>Trending</span>
+        </div>
+        <div class="sidebar-item" onclick="showSection('subscriptions')">
+          <span class="material-icons">subscriptions</span>
+          <span>Subscriptions</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-item" onclick="showSection('library')" style="display: none">
+          <span class="material-icons">video_library</span>
+          <span>Library</span>
+        </div>
+        <div class="sidebar-item" onclick="showSection('history')">
+          <span class="material-icons">history</span>
+          <span>History</span>
+        </div>
+        <div class="sidebar-item" onclick="showSection('watch-later')">
+          <span class="material-icons">watch_later</span>
+          <span>Watch Later</span>
+        </div>
+        <div class="sidebar-item" onclick="showSection('liked')">
+          <span class="material-icons">thumb_up</span>
+          <span>Liked Videos</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section" id="subscriptions-sidebar">
+  
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Trending</div>
+        <div class="sidebar-item">
+          <span class="material-icons">currency_bitcoin</span>
+          <span>Memecoins</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="material-icons">trending_up</span>
+          <span>Crypto News</span>
+        </div>
+        <div class="sidebar-item">
+          <span class="material-icons">music_note</span>
+          <span>Crypto Music</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- #################### ОСНОВНОЙ КОНТЕНТ #################### -->
+    <div class="main-content">
+      <div id="home-page">
+        <h2>Recommended Videos</h2>
+        <div class="video-grid" id="video-grid">
+          <!-- Videos will be loaded here -->
+        </div>
+      </div>
+
+      <div id="trending-page" style="display: none">
+        <h2>Trending Memecoins Videos</h2>
+        <div class="video-grid" id="trending-grid"></div>
+      </div>
+
+      <div id="subscriptions-page" style="display: none">
+        <h2>Your Subscriptions</h2>
+        <div class="video-grid" id="subscriptions-grid"></div>
+      </div>
+
+      <div id="library-page" style="display: none">
+        <h2>Your Library</h2>
+        <div class="video-grid" id="library-grid"></div>
+      </div>
+
+      <div id="history-page" style="display: none">
+        <h2>Watch History</h2>
+        <div class="video-grid" id="history-grid"></div>
+      </div>
+
+      <div id="watch-later-page" style="display: none">
+        <h2>Watch Later</h2>
+        <div class="video-grid" id="watch-later-grid"></div>
+      </div>
+
+      <div id="liked-page" style="display: none">
+        <h2>Liked Videos</h2>
+        <div class="video-grid" id="liked-grid"></div>
+      </div>
+
+      <div id="video-page" style="display: none">
+        <div class="video-page">
+          <div class="video-player-container">
+            <div class="video-player">
+              <iframe id="video-iframe" frameborder="0" allowfullscreen=""></iframe>
+            </div>
+          </div>
+
+          <div class="video-description">
+            <h2 id="video-page-title">Video Title</h2>
+            <div style="display: flex; align-items: center; margin-bottom: 1rem">
+              <div class="video-stats" style="flex-grow: 1">
+                <span id="video-views">100K views</span>
+                <span id="video-date">1 day ago</span>
+              </div>
+              <div class="video-actions">
+                <button class="action-button like" id="like-button">
+                  <span class="material-icons">thumb_up</span>
+                  <span id="like-count">1.2K</span>
+                </button>
+                <button class="action-button dislike" id="dislike-button">
+                  <span class="material-icons">thumb_down</span>
+                  <span id="dislike-count">24</span>
+                </button>
+                <button class="action-button" id="save-button">
+                  <span class="material-icons">playlist_add</span>
+                  <span>Save</span>
+                </button>
+                <button class="action-button">
+                  <span class="material-icons">share</span>
+                  <span>Share</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="
+                display: flex;
+                align-items: center;
+                margin-bottom: 1rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #eee;
+              ">
+              <img src="images/removed.png" alt="Channel" id="avachannel" style="
+                  width: 50px;
+                  height: 50px;
+                  border-radius: 50%;
+                  margin-right: 1rem;
+                ">
+              <div style="flex-grow: 1">
+                <div style="font-weight: bold">Memecoin Channel</div>
+                <div style="font-size: 0.8rem; color: #666">
+                  50K subscribers
+                </div>
+              </div>
+              <button class="subscribe-button" id="subscribe-button">
+                Subscribe
+              </button>
+            </div>
+
+            <div id="video-description-text">
+              Video description about memecoins. This could include analysis,
+              predictions, or other crypto-related content.
+            </div>
+          </div>
+
+          <div class="comments-section">
+            <h3>Comments</h3>
+            <div class="comment-form">
+              <img src="images/removed.png" alt="User">
+              <input type="text" class="comment-input" id="comment-input" placeholder="Add a comment...">
+            </div>
+
+            <div id="comments-container">
+              <!-- Comments will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sample video data
+      const videos = [
+        {
+          id: "CNx4I-ySEp4",
+          title: "How To Get Rich With Memecoins In 2025",
+          channel: "Orangie Web3",
+          views: "532K views",
+          timestamp: "2 days ago",
+          thumbnail: "https://i.ytimg.com/vi/CNx4I-ySEp4/hqdefault.jpg",
+          channelIcon:
+            "https://yt3.googleusercontent.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s176-c-k-c0x00ffffff-no-rj",
+          description:
+            "In this video, I reveal the top memecoins with 100x potential in 2025! Learn how to spot the next SHIB or DOGE before they explode. Key strategies, market trends, and insider tips included.",
+          likes: 9876,
+          duration: "16:57",
+          dislikes: 215,
+          subscribers: "320K",
+          comments: [],
+          tags: [
+            "Memecoins",
+            "Crypto",
+            "Bitcoin",
+            "Altcoins",
+            "SHIB",
+            "DOGE",
+            "How to get rich",
+          ],
+        },
+
+        {
+          id: "B_2C1A99QQE",
+          title:
+            "Discover Guardians of the Car, the best presale crypto memecoin project",
+          channel: "INFOtime",
+          views: "1.4M views",
+          timestamp: "Streamed 2 weeks ago",
+          duration: "5:24",
+          thumbnail: "https://i.ytimg.com/vi/B_2C1A99QQE/hqdefault.jpg",
+          channelIcon:
+            "https://yt3.googleusercontent.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s176-c-k-c0x00ffffff-no-rj",
+          description:
+            "In this video, we explore Guardians of the Car (GOTC) - the most promising crypto presale of 2024. Learn why this automotive-themed memecoin could be the next big thing in cryptocurrency, with expert analysis of its tokenomics, roadmap, and 100x potential.",
+          likes: 12500,
+          dislikes: 300,
+          subscribers: "2.3M",
+          comments: [],
+          tags: [
+            "crypto presale",
+            "memecoin",
+            "GOTC",
+            "Guardians of the Car",
+            "crypto 2024",
+            "best presale",
+            "100x crypto",
+            "new memecoin",
+          ],
+        },
+        {
+          id: "QBMxH3X4-Aw",
+          title:
+            "New 100X Solana Meme Coin #Solaxy Is Getting Bigger!! Biggest Presale Now!!",
+          channel: "Bitcoin & Altcoins Price Analysis",
+          views: "356K views",
+          timestamp: "2 days ago",
+          duration: "3:33",
+          thumbnail: "https://i.ytimg.com/vi/QBMxH3X4-Aw/hqdefault.jpg",
+          channelIcon:
+            "https://yt3.googleusercontent.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s176-c-k-c0x00ffffff-no-rj",
+          description:
+            "Solaxy ($SOLXY) is emerging as the hottest new memecoin on Solana with explosive presale momentum. In this urgent update, we analyze why this could be the next 100x opportunity and how to participate in the presale before it closes.",
+          likes: 12400,
+          dislikes: 380,
+          subscribers: "1.2M",
+          comments: [],
+          tags: [
+            "Solana",
+            "Solaxy",
+            "Memecoin",
+            "100x",
+            "Crypto Presale",
+            "Altcoin Gem",
+            "2024 Crypto",
+            "Next Big Memecoin",
+          ],
+          keyMoments: [
+            { time: "0:00", title: "Solaxy Presale Breaking Records" },
+            { time: "0:45", title: "Tokenomics Analysis" },
+            { time: "1:30", title: "How To Buy (Step-by-Step)" },
+            { time: "2:15", title: "Price Prediction & 100x Potential" },
+            { time: "3:00", title: "Urgent Presale Update" },
+          ],
+        },
+        {
+          id: "R6uJSkwCqWs",
+          title:
+            "How I Made $9,000/day Trading Memecoins (Step-by-Step tutorial)",
+          channel: "Champ",
+          views: "1.8M views",
+          timestamp: "2 weeks ago",
+          duration: "8:04",
+          thumbnail: "https://i.ytimg.com/vi/R6uJSkwCqWs/hqdefault.jpg",
+          channelIcon:
+            "https://yt3.googleusercontent.com/ytc/APkrFKaqca-zY6X7b7X5Q5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Q=s176-c-k-c0x00ffffff-no-rj",
+          description:
+            "My exact strategy for identifying and flipping memecoins for massive profits. Includes wallet setup, tools I use, and real trade examples from my $9k/day results.",
+          likes: 25400,
+          dislikes: 850,
+          subscribers: "3.4M",
+          comments: [],
+          tags: ["Memecoin", "Trading", "Crypto", "Profit", "Tutorial"],
+        },
+        {
+          id: "xcSB_jycKpY",
+          title: "The EVIL Way to Get Rich With Memecoins",
+          channel: "Mr.Profit",
+          views: "876K views",
+          timestamp: "1 month ago",
+          duration: "11:51",
+          thumbnail: "https://i.ytimg.com/vi/xcSB_jycKpY/hqdefault.jpg",
+          channelIcon:
+            "https://yt3.googleusercontent.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s176-c-k-c0x00ffffff-no-rj",
+          description:
+            "Controversial but effective methods to capitalize on memecoin mania. This is NOT financial advice - just documenting what actually works in this crazy market.",
+          likes: 18700,
+          dislikes: 3200,
+          subscribers: "2.1M",
+          comments: [],
+          tags: ["Memecoin", "Crypto", "Trading", "Controversial", "Profit"],
+        },
+        {
+          id: "fTogievzB1s",
+          title:
+            "What is Driving the Memecoin Craze? Should You Invest? | Vantage With Palki Sharma | N18G",
+          channel: "Firstpost",
+          views: "3.2M views",
+          timestamp: "3 months ago",
+          duration: "4:42",
+          thumbnail: "https://i.ytimg.com/vi/fTogievzB1s/hqdefault.jpg",
+          channelIcon:
+            "https://yt3.googleusercontent.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s176-c-k-c0x00ffffff-no-rj",
+          description:
+            "Palki Sharma examines the psychology and economics behind the memecoin phenomenon. Experts weigh in on whether these assets are investments or gambles.",
+          likes: 42100,
+          dislikes: 2900,
+          subscribers: "8.7M",
+          comments: [],
+          tags: ["Memecoin", "Crypto", "Analysis", "Investing", "Economics"],
+        },
+        {
+          id: "atd6SsNG9oE",
+          title:
+            "TRADING MEMECOINS FOR PROFIT | LIVE TRADING MEME COINS ON SOLANA & BNB",
+          channel: "Jerzy NFT",
+          views: "142K views",
+          timestamp: "5 days ago",
+          duration: "4:42",
+          thumbnail: "https://i.ytimg.com/vi/atd6SsNG9oE/hqdefault.jpg",
+          channelIcon:
+            "https://yt3.googleusercontent.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s176-c-k-c0x00ffffff-no-rj",
+          description:
+            "Real-time memecoin trading session showing exact entry/exit points. Covers both Solana and BSC chains with live profit tracking.",
+          likes: 6800,
+          dislikes: 150,
+          subscribers: "890K",
+          comments: [],
+          tags: ["Memecoin", "Trading", "Solana", "BNB", "Live"],
+        },
+        {
+          id: "5rI378lrOBc",
+          title: "How To ACTUALLY Trade Memecoins (Full Guide 2024)",
+          channel: "Champ",
+          views: "1.2M views",
+          timestamp: "1 week ago",
+          duration: "27:16",
+          thumbnail: "https://i.ytimg.com/vi/5rI378lrOBc/hqdefault.jpg",
+          channelIcon:
+            "https://yt3.googleusercontent.com/ytc/APkrFKaqca-zY6X7b7X5Q5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Q=s176-c-k-c0x00ffffff-no-rj",
+          description:
+            "The most comprehensive memecoin trading guide for 2024. Learn my complete framework for identifying, analyzing, and executing profitable memecoin trades across Solana, Base, and other chains. Includes live examples and my personal checklist.",
+          likes: 32400,
+          dislikes: 950,
+          subscribers: "3.4M",
+          comments: [],
+          tags: [
+            "memecoin trading",
+            "crypto guide 2024",
+            "solana memecoins",
+            "how to trade crypto",
+            "memecoin strategy",
+            "altcoin trading",
+            "crypto profits",
+            "full tutorial",
+          ],
+          chapters: [
+            { start: "0:00", title: "Introduction" },
+            { start: "2:15", title: "Essential Tools Setup" },
+            { start: "7:42", title: "Identifying Potential Memecoins" },
+            { start: "12:30", title: "Technical Analysis Breakdown" },
+            { start: "18:55", title: "Risk Management Strategy" },
+            { start: "23:10", title: "Live Trade Examples" },
+            { start: "26:30", title: "Final Checklist" },
+          ],
+        },
+        {
+          id: "ROP0oXwuyuA",
+          title: "How To Get Rich With Memecoins In 2025",
+          channel: "Champ",
+          duration: "19:32",
+          thumbnail: "https://i.ytimg.com/vi/ROP0oXwuyuA/hqdefault.jpg",
+          views: "1.8M views",
+          timestamp: "3 weeks ago",
+          likes: 42000,
+          dislikes: 1200,
+          description:
+            "Complete guide to identifying and investing in memecoins with 100x potential in 2025. Includes market analysis, entry strategies, and portfolio management techniques.",
+          tags: [
+            "memecoins",
+            "crypto 2025",
+            "how to get rich",
+            "altcoin investing",
+            "crypto strategy",
+          ],
+        },
+        {
+          id: "mO1YyLWE5V0",
+          title: "Watch Me LIVE Make $50,000 Trading Crypto Memecoins",
+          channel: "Alex Choi Crypto",
+          duration: "27:52",
+          thumbnail: "https://i.ytimg.com/vi/mO1YyLWE5V0/hqdefault.jpg",
+          views: "2.3M views",
+          timestamp: "5 days ago",
+          likes: 38000,
+          dislikes: 900,
+          description:
+            "Live trading session where I turn $5,000 into $50,000 trading memecoins. Real-time analysis, trades, and explanations of my exact strategy.",
+          tags: [
+            "live trading",
+            "memecoin profits",
+            "crypto trading",
+            "50k challenge",
+          ],
+        },
+        {
+          id: "68RTFD4t35Q",
+          title: "Memecoins aren't dead, they're just misunderstood",
+          channel: "Orangie Web3",
+          duration: "19:31",
+          thumbnail: "https://i.ytimg.com/vi/68RTFD4t35Q/hqdefault.jpg",
+          views: "856K views",
+          timestamp: "2 months ago",
+          likes: 18700,
+          dislikes: 450,
+          description:
+            "Why memecoins still represent the best risk/reward ratio in crypto and how to separate the gems from the scams in 2024.",
+          tags: [
+            "memecoin analysis",
+            "crypto investing",
+            "web3",
+            "altcoin strategy",
+          ],
+        },
+        {
+          id: "9zBe0zisqTw",
+          title: "How To Rug Pull PUMP FUN Memecoin In 2025 (FOR BEGINNERS)",
+          channel: "EducationalPasha",
+          duration: "7:21",
+          thumbnail: "https://i.ytimg.com/vi/9zBe0zisqTw/hqdefault.jpg",
+          views: "420K views",
+          timestamp: "1 month ago",
+          likes: 9800,
+          dislikes: 3200,
+          description:
+            "Warning: Educational purposes only. This video demonstrates how pump and dump schemes work in the memecoin space to help you avoid them.",
+          tags: [
+            "pump and dump",
+            "memecoin scams",
+            "crypto education",
+            "rug pull",
+          ],
+        },
+        {
+          id: "3cWK8NPqT-c",
+          title: "380 Days Of Memecoin Trading Knowledge In 38 Minutes",
+          channel: "sajad",
+          duration: "37:40",
+          thumbnail: "https://i.ytimg.com/vi/3cWK8NPqT-c/hqdefault.jpg",
+          views: "1.1M views",
+          timestamp: "3 weeks ago",
+          likes: 25400,
+          dislikes: 600,
+          description:
+            "Compressed version of everything I learned trading memecoins for over a year. Technical patterns, psychological tricks, and my personal framework.",
+          tags: [
+            "memecoin trading",
+            "crypto knowledge",
+            "trading psychology",
+            "technical analysis",
+          ],
+        },
+        {
+          id: "09Y-a9sBhrA",
+          title: "How to Trade Memecoins with Photon",
+          channel: "Crypto Gorilla",
+          duration: "17:13",
+          thumbnail: "https://i.ytimg.com/vi/09Y-a9sBhrA/hqdefault.jpg",
+          views: "723K views",
+          timestamp: "1 month ago",
+          likes: 14200,
+          dislikes: 350,
+          description:
+            "Complete guide to using Photon for memecoin trading - includes setup, configuration, and live trading examples with this powerful tool.",
+          tags: ["photon", "memecoin trading", "crypto tools", "trading bot"],
+        },
+        {
+          id: "zxMJ0w59nEs",
+          title:
+            "Dexscreener BEST settings for Solana Meme Coins (2x $$$ in 1-hour)",
+          channel: "iCoin",
+          duration: "14:14",
+          thumbnail: "https://i.ytimg.com/vi/zxMJ0w59nEs/hqdefault.jpg",
+          views: "568K views",
+          timestamp: "2 weeks ago",
+          likes: 11800,
+          dislikes: 280,
+          description:
+            "My exact Dexscreener configuration for spotting profitable Solana memecoin trades within the first hour of launch.",
+          tags: ["dexscreener", "solana", "memecoins", "trading setup"],
+        },
+        {
+          id: "t568BvRiuWE",
+          title: "How I Transformed $20 into $807 in 14 Minutes with Memecoins",
+          channel: "Handsome Finance",
+          duration: "14:21",
+          thumbnail: "https://i.ytimg.com/vi/t568BvRiuWE/hqdefault.jpg",
+          views: "1.4M views",
+          timestamp: "3 days ago",
+          likes: 23100,
+          dislikes: 750,
+          description:
+            "Real trade breakdown showing how I spotted and executed this 40x trade in under 15 minutes. Includes my thought process and tools used.",
+          tags: [
+            "memecoin profits",
+            "crypto gains",
+            "small account challenge",
+            "trading psychology",
+          ],
+        },
+        {
+          id: "A9fAVG18J4I",
+          title:
+            "How to Launch a $1M Solana MemeCoin with Pump.Fun?! 🤯 (PROVEN METHOD!)",
+          channel: "Ali Solanki",
+          duration: "8:03",
+          thumbnail: "https://i.ytimg.com/vi/A9fAVG18J4I/hqdefault.jpg",
+          views: "892K views",
+          timestamp: "1 week ago",
+          likes: 18700,
+          dislikes: 1200,
+          description:
+            "Step-by-step guide to creating and marketing a successful Solana memecoin using Pump.Fun - includes my exact checklist for viral launches.",
+          tags: ["pump.fun", "solana", "memecoin launch", "crypto marketing"],
+        },
+        {
+          id: "6nqzwdGxTGc",
+          title:
+            "Murad Mahmudov - The Memecoin Supercycle - TOKEN2049 Singapore 2024",
+          channel: "TOKEN2049",
+          duration: "21:16",
+          thumbnail: "https://i.ytimg.com/vi/6nqzwdGxTGc/hqdefault.jpg",
+          views: "356K views",
+          timestamp: "1 month ago",
+          likes: 9800,
+          dislikes: 150,
+          description:
+            "Murad Mahmudov's keynote presentation about why memecoins represent a fundamental shift in crypto economics and culture.",
+          tags: [
+            "token2049",
+            "memecoin supercycle",
+            "murad mahmudov",
+            "crypto conference",
+          ],
+        },
+        {
+          id: "tBqQ_3n4OAs",
+          title:
+            "How To Spot Bundles | Avoiding Rugs Tutorial (REAL TALK EP.2)",
+          channel: "RED",
+          duration: "18:59",
+          thumbnail: "https://i.ytimg.com/vi/tBqQ_3n4OAs/hqdefault.jpg",
+          views: "412K views",
+          timestamp: "2 months ago",
+          likes: 14200,
+          dislikes: 180,
+          description:
+            "Advanced techniques for identifying bundle transactions and avoiding rug pulls in the memecoin space. Real examples analyzed.",
+          tags: [
+            "rug pull",
+            "memecoin safety",
+            "crypto security",
+            "trading education",
+          ],
+        },
+        {
+          id: "dP4vq1_3ip4",
+          title: "6 Lessons I Learned to Make Millions from Memecoins",
+          channel: "Daniel McEvoy",
+          duration: "25:29",
+          thumbnail: "https://i.ytimg.com/vi/dP4vq1_3ip4/hqdefault.jpg",
+          views: "1.2M views",
+          timestamp: "3 weeks ago",
+          likes: 32100,
+          dislikes: 800,
+          description:
+            "Personal journey and key lessons from turning $5,000 into $2.8 million trading memecoins over 18 months. No hype, just facts.",
+          tags: [
+            "memecoin profits",
+            "crypto lessons",
+            "trading journey",
+            "wealth building",
+          ],
+        },
+        {
+          id: "ZkWuPhOTaRA",
+          title:
+            "Why Ethereum MEMECOINS Will Skyrocket in 2025! *Actual Evidence*",
+          channel: "Zack Ventura",
+          duration: "18:53",
+          thumbnail: "https://i.ytimg.com/vi/ZkWuPhOTaRA/hqdefault.jpg",
+          views: "765K views",
+          timestamp: "1 month ago",
+          likes: 18700,
+          dislikes: 450,
+          description:
+            "Technical and fundamental analysis showing why Ethereum-based memecoins are poised for massive growth in the next cycle.",
+          tags: [
+            "ethereum",
+            "memecoins",
+            "crypto analysis",
+            "altcoin investing",
+          ],
+        },
+        {
+          id: "MhHYR81Cbg0",
+          title: "HOW TO SNIPE MEMECOINS ON ETH",
+          channel: "Greeny",
+          duration: "10:08",
+          thumbnail: "https://i.ytimg.com/vi/MhHYR81Cbg0/hqdefault.jpg",
+          views: "523K views",
+          timestamp: "2 weeks ago",
+          likes: 12400,
+          dislikes: 280,
+          description:
+            "My complete Ethereum memecoin snipe strategy - includes tool configuration, gas settings, and timing techniques for maximum alpha.",
+          tags: ["ethereum", "memecoin sniping", "crypto trading", "defi"],
+        },
+        {
+          id: "UnOjduaau88",
+          title:
+            "The EASIEST Method to Buy 1000x Solana Meme Coins BEFORE they Explode (DexScreener)",
+          channel: "Across The Rubicon",
+          duration: "21:43",
+          thumbnail: "https://i.ytimg.com/vi/UnOjduaau88/hqdefault.jpg",
+          views: "987K views",
+          timestamp: "1 week ago",
+          likes: 23100,
+          dislikes: 600,
+          description:
+            "Simple but powerful method for identifying Solana memecoins before they pump using DexScreener. No bots, just smart filtering.",
+          tags: ["solana", "memecoins", "dexscreener", "1000x"],
+        },
+        {
+          id: "CoRJMqiurPc",
+          title:
+            "Best Memecoins To Buy in 2025 For MASSIVE GAINS - Millionaires Will Be Made (URGENT)",
+          channel: "Crypto Kai",
+          duration: "10:31",
+          thumbnail: "https://i.ytimg.com/vi/CoRJMqiurPc/hqdefault.jpg",
+          views: "1.5M views",
+          timestamp: "4 days ago",
+          likes: 32100,
+          dislikes: 1200,
+          description:
+            "My top 7 memecoin picks for 2025 that have the potential to create the next wave of crypto millionaires. Research-backed selections.",
+          tags: [
+            "memecoin picks",
+            "crypto 2025",
+            "altcoin gems",
+            "investing guide",
+          ],
+        },
+        {
+          id: "D8YHKc50HgQ",
+          title:
+            "How This Kid Makes $6000 EVERY Day Trading Meme Coins [Step By Step]",
+          channel: "K Crypto",
+          duration: "26:48",
+          thumbnail: "https://i.ytimg.com/vi/D8YHKc50HgQ/hqdefault.jpg",
+          views: "2.1M views",
+          timestamp: "1 week ago",
+          likes: 38700,
+          dislikes: 900,
+          description:
+            "Complete breakdown of the exact strategy a 19-year-old uses to consistently profit from memecoin trading. Includes screenshots and trade logs.",
+          tags: [
+            "memecoin trading",
+            "daily profits",
+            "crypto strategy",
+            "step by step",
+          ],
+        },
+        {
+          id: "Y7XmBlCH_cE",
+          title:
+            "How I Make $300 Every 48Hours Trading Meme Coins on SOLANA with Mobile PHONE [STEP BY STEP TUTORIAL]",
+          channel: "Everyday Wealth",
+          duration: "36:55",
+          thumbnail: "https://i.ytimg.com/vi/Y7XmBlCH_cE/hqdefault.jpg",
+          views: "876K views",
+          timestamp: "2 weeks ago",
+          likes: 21400,
+          dislikes: 500,
+          description:
+            "Full mobile-only strategy for consistent profits trading Solana memecoins. Works anywhere with just a smartphone and $100 starting capital.",
+          tags: ["solana", "mobile trading", "memecoins", "passive income"],
+        },
+        {
+          id: "rUSYltuSjvw",
+          title:
+            "Solana Price News Today - SOL Elliott Wave Price Technical Analysis, Price Update!",
+          channel: "More Crypto Online",
+          duration: "5:59",
+          thumbnail: "https://i.ytimg.com/vi/rUSYltuSjvw/hqdefault.jpg",
+          views: "128K views",
+          timestamp: "1 day ago",
+          likes: 4200,
+          description:
+            "Latest Solana price analysis using Elliott Wave theory...",
+        },
+        {
+          id: "hPubZidPcpw",
+          title:
+            "$400-$500 SOLANA INCOMING! (REALISTIC SOLANA PRICE PREDICTION 2025!) (WE BOUGHT THE DIP!)",
+          channel: "Crypto Jebb",
+          duration: "11:24",
+          thumbnail: "https://i.ytimg.com/vi/hPubZidPcpw/hqdefault.jpg",
+          views: "256K views",
+          timestamp: "3 days ago",
+          likes: 9800,
+          description: "Why we're accumulating SOL at current levels...",
+        },
+        {
+          id: "2Ch4HPZ2LTg",
+          title:
+            "Solana Price News Today - SOL Elliott Wave Price Technical Analysis, Price Update!",
+          channel: "More Crypto Online",
+          duration: "7:25",
+          thumbnail: "https://i.ytimg.com/vi/2Ch4HPZ2LTg/hqdefault.jpg",
+          views: "184K views",
+          timestamp: "1 week ago",
+          likes: 6200,
+          description: "Updated SOL technical analysis...",
+        },
+        {
+          id: "vWajFbj8Nu8",
+          title: "How To Buy & Sell Solana Meme Coins (FULL BEGINNER GUIDE)",
+          channel: "Baird Business",
+          duration: "13:16",
+          thumbnail: "https://i.ytimg.com/vi/vWajFbj8Nu8/hqdefault.jpg",
+          views: "342K views",
+          timestamp: "2 weeks ago",
+          likes: 12400,
+          description: "Complete step-by-step tutorial...",
+        },
+        {
+          id: "9Q9Klhig6Uw",
+          title: "Doing a Rugpull LIVE with a bundler (Educational Purposes)",
+          channel: "Crypto Lightskin",
+          duration: "7:20",
+          thumbnail: "https://i.ytimg.com/vi/9Q9Klhig6Uw/hqdefault.jpg",
+          views: "215K views",
+          timestamp: "3 days ago",
+          likes: 7800,
+          description: "EDUCATIONAL DEMONSTRATION ONLY...",
+        },
+        {
+          id: "jdLecYUOGy0",
+          title:
+            "FLIPPING 5 SOL INTO $500K WITH MEMECOINS EP.8 (TRADING SERIES)",
+          channel: "Insyder Crypto",
+          duration: "24:27",
+          thumbnail: "https://i.ytimg.com/vi/jdLecYUOGy0/hqdefault.jpg",
+          views: "1.2M views",
+          timestamp: "1 week ago",
+          likes: 32400,
+          description: "Episode 8 of our challenge series...",
+        },
+        {
+          id: "3JxbNUHpf34",
+          title: "How To Copytrade GMGN In 2025 (GMGN Copytrading Tutorial)",
+          channel: "TheFinanceValueGuy",
+          duration: "16:42",
+          thumbnail: "https://i.ytimg.com/vi/3JxbNUHpf34/hqdefault.jpg",
+          views: "187K views",
+          timestamp: "5 days ago",
+          likes: 6800,
+          description: "Complete guide to setting up GMGN copytrading...",
+        },
+        {
+          id: "Et4JefIKWSM",
+          title:
+            "The PUMPFUN BULLX SCALPING STRATEGY FILTERS that MADE me OVER 2400 SOL!!!!!!! (91% Win Rate!)",
+          channel: "Crypto Chris",
+          duration: "17:30",
+          thumbnail: "https://i.ytimg.com/vi/Et4JefIKWSM/hqdefault.jpg",
+          views: "892K views",
+          timestamp: "2 weeks ago",
+          likes: 28700,
+          description: "Revealing my exact PumpFun filters...",
+        },
+        {
+          id: "3sc_krTsQAM",
+          title: "How To Use The BEST TRADING Bot For Memecoins.",
+          channel: "Terp Trading",
+          duration: "8:10",
+          thumbnail: "https://i.ytimg.com/vi/3sc_krTsQAM/hqdefault.jpg",
+          views: "321K views",
+          timestamp: "1 month ago",
+          likes: 11200,
+          description: "Setup and configuration guide...",
+        },
+        {
+          id: "DCaP7K207Ds",
+          title: "Realistic Altcoin Price Predictions for 2025 Bull Market!",
+          channel: "No Bs Crypto",
+          duration: "27:33",
+          thumbnail: "https://i.ytimg.com/vi/DCaP7K207Ds/hqdefault.jpg",
+          views: "567K views",
+          timestamp: "3 weeks ago",
+          likes: 19800,
+          description: "Data-driven price targets...",
+        },
+        {
+          id: "Zn-tbLEiaKQ",
+          title: "NEW How To BUY Memecoins On Solana [FAST and EASY]",
+          channel: "Sajad",
+          duration: "12:15",
+          thumbnail: "https://i.ytimg.com/vi/Zn-tbLEiaKQ/hqdefault.jpg",
+          views: "432K views",
+          timestamp: "1 week ago",
+          likes: 15400,
+          description: "Updated 2025 method...",
+        },
+        {
+          id: "RgQmx45LNs8",
+          title: "How to Use Nova Trading Bot ( FULL GUIDE 2025 )",
+          channel: "CryptoZin",
+          duration: "4:11",
+          thumbnail: "https://i.ytimg.com/vi/RgQmx45LNs8/hqdefault.jpg",
+          views: "198K views",
+          timestamp: "5 days ago",
+          likes: 7200,
+          description: "Quick start guide...",
+        },
+        {
+          id: "mYMSUlY8uV4",
+          title: "I made the world's fastest memecoin trading bot with ChatGPT",
+          channel: "Liam James Kay",
+          duration: "13:47",
+          thumbnail: "https://i.ytimg.com/vi/mYMSUlY8uV4/hqdefault.jpg",
+          views: "876K views",
+          timestamp: "2 weeks ago",
+          likes: 32400,
+          description: "Building a low-latency memecoin trading bot...",
+        },
+        {
+          id: "bStvWbUdsMw",
+          title:
+            "BEST Solana Wallet?? Beginner's Phantom Wallet Tutorial in 2025",
+          channel: "CoinGecko",
+          duration: "8:24",
+          thumbnail: "https://i.ytimg.com/vi/bStvWbUdsMw/hqdefault.jpg",
+          views: "321K views",
+          timestamp: "3 weeks ago",
+          likes: 11200,
+          description: "Updated Phantom wallet guide...",
+        },
+        {
+          id: "vDoNF58k-4M",
+          title: "My Top Crypto AI Agents to Invest In",
+          channel: "Coinsider",
+          duration: "15:20",
+          thumbnail: "https://i.ytimg.com/vi/vDoNF58k-4M/hqdefault.jpg",
+          views: "287K views",
+          timestamp: "1 month ago",
+          likes: 9800,
+          description: "Analysis of the most promising AI agent projects...",
+        },
+        {
+          id: "ydRiNur1Sp8",
+          title: "How To Launch a Meme Coin And Make $10k Fast (WITH PROOF)",
+          channel: "Crypto Ninja",
+          duration: "13:53",
+          thumbnail: "https://i.ytimg.com/vi/ydRiNur1Sp8/hqdefault.jpg",
+          views: "765K views",
+          timestamp: "2 weeks ago",
+          likes: 25400,
+          description: "Step-by-step walkthrough...",
+        },
+        {
+          id: "-Z1ULbwEcOU",
+          title:
+            "Fred Krueger - The Bitcoin Shock Is Coming! Solana Is Next, Massive Update...",
+          channel: "Savvy Minds Connect",
+          duration: "8:01",
+          thumbnail: "https://i.ytimg.com/vi/-Z1ULbwEcOU/hqdefault.jpg",
+          views: "432K views",
+          timestamp: "4 days ago",
+          likes: 15400,
+          description: "Fred Krueger's latest market update...",
+        },
+        {
+          id: "lMLnYvLLzSk",
+          title:
+            "How To Launch a Meme Coin And Make $170K+ (educational purposes only)",
+          channel: "Nico",
+          duration: "14:39",
+          thumbnail: "https://i.ytimg.com/vi/lMLnYvLLzSk/hqdefault.jpg",
+          views: "356K views",
+          timestamp: "2 weeks ago",
+          likes: 12400,
+          description:
+            "Educational demonstration showing the complete process of launching a memecoin that generated $170K in profits (not financial advice).",
+          tags: ["memecoin launch", "educational", "crypto profits", "solana"],
+        },
+        {
+          id: "bE4t8eSCYCI",
+          title: "1 Solana Meme Coin Trading Challenge",
+          channel: "Leck",
+          duration: "18:10",
+          thumbnail: "https://i.ytimg.com/vi/bE4t8eSCYCI/hqdefault.jpg",
+          views: "287K views",
+          timestamp: "5 days ago",
+          likes: 9800,
+          description:
+            "Starting with just 1 SOL, we attempt to turn it into life-changing money trading Solana meme coins - live trading session with commentary.",
+          tags: ["trading challenge", "solana", "memecoins", "1 sol challenge"],
+        },
+        {
+          id: "wtu_Feu4dis",
+          title: "Turning $20,000 into $1M+ with a Solana Meme Coin—Here's How",
+          channel: "Michael Wrubel",
+          duration: "8:06",
+          thumbnail: "https://i.ytimg.com/vi/wtu_Feu4dis/hqdefault.jpg",
+          views: "892K views",
+          timestamp: "1 week ago",
+          likes: 32400,
+          description:
+            "Case study of how I identified and invested in a Solana memecoin that returned 50x - full analysis of what to look for in future opportunities.",
+          tags: ["solana", "memecoin", "50x", "case study", "crypto investing"],
+        },
+        {
+          id: "syKabXh2T0A",
+          title:
+            "How I make $1,000/day Trading Solana Meme Coins (Step-by-Step tutorial)",
+          channel: "Orangie Web3",
+          duration: "16:16",
+          thumbnail: "https://i.ytimg.com/vi/syKabXh2T0A/hqdefault.jpg",
+          views: "1.2M views",
+          timestamp: "3 weeks ago",
+          likes: 42100,
+          description:
+            "My exact daily routine and strategy for consistently making $1,000/day trading Solana meme coins - includes tools, indicators and risk management.",
+          tags: ["solana", "memecoin trading", "$1000/day", "tutorial"],
+        },
+        {
+          id: "lC48_Q5BEfo",
+          title: "How to trade solana meme coins [Step By Step]",
+          channel: "The Krypto King",
+          duration: "47:19",
+          thumbnail: "https://i.ytimg.com/vi/lC48_Q5BEfo/hqdefault.jpg",
+          views: "567K views",
+          timestamp: "1 month ago",
+          likes: 18700,
+          description:
+            "The most comprehensive beginner's guide to trading Solana meme coins - from wallet setup to advanced trading strategies in one video.",
+          tags: ["solana", "memecoins", "beginner guide", "trading tutorial"],
+        },
+        {
+          id: "oYZ1RKv3_88",
+          title: "I Discovered the EASY Way to Trade Solana Meme Coins!",
+          channel: "Crypto Empire",
+          duration: "17:34",
+          thumbnail: "https://i.ytimg.com/vi/oYZ1RKv3_88/hqdefault.jpg",
+          views: "432K views",
+          timestamp: "2 weeks ago",
+          likes: 15400,
+          description:
+            "After testing dozens of methods, this simple approach yielded the best results for trading Solana meme coins with minimal effort.",
+          tags: ["solana", "memecoins", "easy method", "trading strategy"],
+        },
+        {
+          id: "abUO_7HBbbc",
+          title: "Which Solana Meme Coins Are Worth Investing In? Top Picks!",
+          channel: "Crypto Trend",
+          duration: "6:09",
+          thumbnail: "https://i.ytimg.com/vi/abUO_7HBbbc/hqdefault.jpg",
+          views: "321K views",
+          timestamp: "4 days ago",
+          likes: 11200,
+          description:
+            "Analysis of current Solana meme coins with actual potential beyond the hype - my top 5 picks for long-term holders.",
+          tags: ["solana", "memecoins", "top picks", "crypto investing"],
+        },
+        {
+          id: "-6d0qLCdA3A",
+          title: "Solana and BNB Meme Coins Are About To Go CRAZY",
+          channel: "The Krypto King",
+          duration: "9:22",
+          thumbnail: "https://i.ytimg.com/vi/-6d0qLCdA3A/hqdefault.jpg",
+          views: "287K views",
+          timestamp: "1 week ago",
+          likes: 9800,
+          description:
+            "Market analysis showing why both Solana and BNB chain meme coins are poised for massive moves in the coming weeks.",
+          tags: ["solana", "bnb chain", "memecoins", "market analysis"],
+        },
+        {
+          id: "wPKC-eZQn50",
+          title: "0.1 Solana TO $10,000 Trading Solana Meme Coins",
+          channel: "Leck",
+          duration: "18:19",
+          thumbnail: "https://i.ytimg.com/vi/wPKC-eZQn50/hqdefault.jpg",
+          views: "412K views",
+          timestamp: "3 days ago",
+          likes: 14200,
+          description:
+            "The ultimate challenge: turning just 0.1 SOL into $10,000 trading Solana meme coins - live trading session with commentary.",
+          tags: ["solana", "memecoins", "trading challenge", "0.1 sol"],
+        },
+        {
+          id: "27uqyf3ivZY",
+          title:
+            "How To Launch a Meme Coin And Make 5k In Minutes (educational purposes)",
+          channel: "Player One",
+          duration: "10:04",
+          thumbnail: "https://i.ytimg.com/vi/27uqyf3ivZY/hqdefault.jpg",
+          views: "765K views",
+          timestamp: "2 weeks ago",
+          likes: 25400,
+          description:
+            "Warning: For education only. Demonstration of how some creators make quick profits launching memecoins - understand the risks.",
+          tags: ["memecoin launch", "educational", "crypto", "solana"],
+        },
+        {
+          id: "GCG2z507GHg",
+          title: "This Solana Sniper Bot Will Make Millionaires",
+          channel: "Nazza Crypto",
+          duration: "9:26",
+          thumbnail: "https://i.ytimg.com/vi/GCG2z507GHg/hqdefault.jpg",
+          views: "892K views",
+          timestamp: "1 week ago",
+          likes: 32100,
+          description:
+            "Testing the most powerful Solana sniper bot that identifies and buys new meme coins within milliseconds of launch.",
+          tags: ["solana", "sniper bot", "memecoins", "trading bot"],
+        },
+        {
+          id: "o61dJ-yry5o",
+          title: "How To Trade 100X Meme Coins on BNB Chain with Bloom Bot",
+          channel: "ItsRagnar",
+          duration: "8:17",
+          thumbnail: "https://i.ytimg.com/vi/o61dJ-yry5o/hqdefault.jpg",
+          views: "356K views",
+          timestamp: "5 days ago",
+          likes: 12400,
+          description:
+            "Complete setup guide for Bloom bot to find and trade 100x potential meme coins on BNB Chain with minimal effort.",
+          tags: ["bnb chain", "memecoins", "bloom bot", "trading bot"],
+        },
+        {
+          id: "opXqRruYDTw",
+          title: "How to find Memecoins BEFORE they 100x",
+          channel: "Crypto Vic",
+          duration: "20:32",
+          thumbnail: "https://i.ytimg.com/vi/opXqRruYDTw/hqdefault.jpg",
+          views: "1.1M views",
+          timestamp: "3 weeks ago",
+          likes: 38700,
+          description:
+            "My proprietary method for identifying meme coins with 100x potential before they pump - includes tools and indicators I use.",
+          tags: ["memecoins", "100x", "crypto gems", "trading strategy"],
+        },
+        {
+          id: "oU5pK3Sbmv0",
+          title:
+            "BEST BullX NEO Tutorial [Filters, Settings, Fees, Insiders, Auto Buys/Sells]",
+          channel: "Sajad",
+          duration: "23:24",
+          thumbnail: "https://i.ytimg.com/vi/oU5pK3Sbmv0/hqdefault.jpg",
+          views: "678K views",
+          timestamp: "2 weeks ago",
+          likes: 25400,
+          description:
+            "Complete configuration guide for BullX NEO - the most powerful memecoin trading bot with insider tracking and auto-trading features.",
+          tags: ["bullx neo", "trading bot", "memecoins", "configuration"],
+        },
+        {
+          id: "Cmw_VVj4C14",
+          title:
+            "Top 3 Meme Coins To buy now For Massive 100X Returns For Next Bull Run!!",
+          channel: "Alessandro De Crypto",
+          duration: "5:10",
+          thumbnail: "https://i.ytimg.com/vi/Cmw_VVj4C14/hqdefault.jpg",
+          views: "432K views",
+          timestamp: "4 days ago",
+          likes: 15400,
+          description:
+            "Urgent: These 3 meme coins have all the right fundamentals for 100x returns in the coming bull run - research before it's too late.",
+          tags: ["memecoins", "100x", "bull run", "crypto gems"],
+        },
+        {
+          id: "iomjGjkjys4",
+          title:
+            "BEST SOLANA MEME COINS TO BUY NOW (RETIRE EARLY WITH THESE COINS)",
+          channel: "Crypto Hype - Daily Crypto News",
+          duration: "9:46",
+          thumbnail: "https://i.ytimg.com/vi/iomjGjkjys4/hqdefault.jpg",
+          views: "567K views",
+          timestamp: "1 week ago",
+          likes: 19800,
+          description:
+            "After analyzing hundreds of projects, these Solana meme coins have the strongest communities and tokenomics for long-term growth.",
+          tags: ["solana", "memecoins", "crypto gems", "investing"],
+        },
+        {
+          id: "4Gckq6cqgkM",
+          title:
+            "How To Make 5 SOL a Day Launch Crypto Meme Coins (Working now)",
+          channel: "Guilherme Rezzadori",
+          duration: "5:24",
+          thumbnail: "https://i.ytimg.com/vi/4Gckq6cqgkM/hqdefault.jpg",
+          views: "321K views",
+          timestamp: "3 days ago",
+          likes: 11200,
+          description:
+            "Step-by-step method to consistently earn 5 SOL daily by launching and marketing simple meme coins (requires initial capital).",
+          tags: ["memecoin launch", "5 sol daily", "crypto income", "solana"],
+        },
+        {
+          id: "S7rD2DKW06E",
+          title: "TOP SOLANA MEMECOINS TO 100X ON SOLANA! 2024",
+          channel: "Jerzy NFT",
+          duration: "7:03",
+          thumbnail: "https://i.ytimg.com/vi/S7rD2DKW06E/hqdefault.jpg",
+          views: "287K views",
+          timestamp: "1 week ago",
+          likes: 9800,
+          description:
+            "My top Solana meme coin picks that could 100x before the end of 2024 - based on community growth and tokenomics analysis.",
+          tags: ["solana", "memecoins", "100x", "2024"],
+        },
+        {
+          id: "9AeaFHF1OD0",
+          title:
+            "Top Solana Meme Coins 2024 - 2025 To Make Millions This Bull Season !",
+          channel: "Crypto Never Sleeps",
+          duration: "11:51",
+          thumbnail: "https://i.ytimg.com/vi/9AeaFHF1OD0/hqdefault.jpg",
+          views: "412K views",
+          timestamp: "5 days ago",
+          likes: 14200,
+          description:
+            "Comprehensive analysis of Solana meme coins with millionaire-making potential in the 2024-2025 bull market season.",
+          tags: ["solana", "memecoins", "bull market", "2025"],
+        },
+        {
+          id: "kHVx4Xda1u4",
+          title: "Top Solana Meme Coins To BUY NOW!!! (100X SOL MEME COINS)",
+          channel: "99Bitcoins",
+          duration: "7:07",
+          thumbnail: "https://i.ytimg.com/vi/kHVx4Xda1u4/hqdefault.jpg",
+          views: "356K views",
+          timestamp: "2 days ago",
+          likes: 12400,
+          description:
+            "Urgent update: These Solana meme coins are showing all the right signs for potential 100x returns - research before they pump.",
+          tags: ["solana", "memecoins", "100x", "crypto gems"],
+        },
+        {
+          id: "A4j3g914rr0",
+          title: "Solana MEMECOINS: Don't Miss Out On These TOP Tips!!",
+          channel: "Coin Bureau",
+          duration: "19:06",
+          thumbnail: "https://i.ytimg.com/vi/A4j3g914rr0/hqdefault.jpg",
+          views: "1.4M views",
+          timestamp: "3 weeks ago",
+          likes: 52100,
+          description:
+            "Essential tips and strategies for navigating the Solana memecoin market - how to spot opportunities and avoid common pitfalls.",
+          tags: ["solana", "memecoins", "trading tips", "coin bureau"],
+        },
+        {
+          id: "TrxC_mWRvJA",
+          title: "Top Memecoins For 2025 30-50x Easy",
+          channel: "Only Investors",
+          duration: "6:26",
+          thumbnail: "https://i.ytimg.com/vi/TrxC_mWRvJA/hqdefault.jpg",
+          views: "287K views",
+          timestamp: "3 days ago",
+          likes: 9800,
+          description:
+            "After analyzing hundreds of projects, these 5 memecoins have the perfect setup for 30-50x gains in 2025 - easy picks for beginners.",
+          tags: ["memecoins", "2025", "30x", "crypto gems", "altcoins"],
+        },
+        {
+          id: "E7MkrwIrsDI",
+          title: "Memecoin Millionaire: How to Get RICH with Memecoins in 2025",
+          channel: "Brett Malinowski",
+          duration: "1:09:04",
+          thumbnail: "https://i.ytimg.com/vi/E7MkrwIrsDI/hqdefault.jpg",
+          views: "412K views",
+          timestamp: "1 week ago",
+          likes: 14200,
+          description:
+            "Complete masterclass on memecoin investing - from identifying early gems to portfolio management strategies that created millionaires in previous cycles.",
+          tags: [
+            "memecoins",
+            "millionaire",
+            "2025",
+            "crypto investing",
+            "wealth",
+          ],
+        },
+        {
+          id: "dlsvjJv1048",
+          title:
+            "Last Chance To Buy This New Hyped Meme Coin Before Launch!! Buy Fast!!",
+          channel: "Bitcoin & Altcoins Price Analysis",
+          duration: "3:14",
+          thumbnail: "https://i.ytimg.com/vi/dlsvjJv1048/hqdefault.jpg",
+          views: "356K views",
+          timestamp: "1 day ago",
+          likes: 12400,
+          description:
+            "URGENT: Final opportunity to participate in this hyped memecoin presale before exchange listings - potential 100x according to analysts.",
+          tags: ["memecoin", "presale", "100x", "urgent", "crypto"],
+        },
+        {
+          id: "8B_KATIXnKg",
+          title:
+            "How to Find 100x Solana Meme Coins October 2024 (Simple Guide)",
+          channel: "Jon Trading",
+          duration: "10:02",
+          thumbnail: "https://i.ytimg.com/vi/8B_KATIXnKg/hqdefault.jpg",
+          views: "198K views",
+          timestamp: "5 days ago",
+          likes: 7200,
+          description:
+            "My simple 3-step method for identifying Solana meme coins with 100x potential - works especially well in October 2024 market conditions.",
+          tags: ["solana", "memecoins", "100x", "october 2024", "trading"],
+        },
+        {
+          id: "drREtJ28IGI",
+          title:
+            "Mind Of Pepe Best Meme Coin To Buy Next!! Insane Hype On This One!!",
+          channel: "Alessandro De Crypto",
+          duration: "4:25",
+          thumbnail: "https://i.ytimg.com/vi/drREtJ28IGI/hqdefault.jpg",
+          views: "321K views",
+          timestamp: "2 days ago",
+          likes: 11200,
+          description:
+            "Breaking: Mind Of Pepe memecoin showing all the signs of going viral - analysis of why this could be the next big meme token.",
+          tags: ["pepe", "memecoin", "viral", "crypto", "hype"],
+        },
+        {
+          id: "8MgWEDvxDZw",
+          title: "[LIVE] 1 SOL TO $1M CHALLENGE DAY 16 | TRADING MEMECOINS",
+          channel: "Insyder Crypto",
+          duration: "10:36:06",
+          thumbnail: "https://i.ytimg.com/vi/8MgWEDvxDZw/hqdefault.jpg",
+          views: "1.5M views",
+          timestamp: "Streaming now",
+          likes: 52100,
+          description:
+            "Day 16 of our epic challenge to turn 1 SOL into $1M trading memecoins - live trading session with real-time analysis and trades.",
+          tags: ["1 sol", "challenge", "live trading", "memecoins", "solana"],
+        },
+        {
+          id: "zof-xB-O3cs",
+          title: "The FASTEST MEMECOIN Trading Bot (NO FEES)",
+          channel: "foz",
+          duration: "5:37",
+          thumbnail: "https://i.ytimg.com/vi/zof-xB-O3cs/hqdefault.jpg",
+          views: "432K views",
+          timestamp: "1 week ago",
+          likes: 15400,
+          description:
+            "Testing the revolutionary new memecoin trading bot that executes trades faster than competitors with zero fees - setup guide included.",
+          tags: ["trading bot", "memecoins", "no fees", "fastest", "crypto"],
+        },
+        {
+          id: "wz6JUIQ7LZk",
+          title:
+            "How Brett, Popcat, and This New Crypto Presale Could Rewrite the Rules of the Game",
+          channel: "XRP news today",
+          duration: "1:03",
+          thumbnail: "https://i.ytimg.com/vi/wz6JUIQ7LZk/hqdefault.jpg",
+          views: "128K views",
+          timestamp: "3 days ago",
+          likes: 4200,
+          description:
+            "Breaking analysis of how these three projects are changing memecoin economics - special focus on the new presale opportunity.",
+          tags: ["brett", "popcat", "presale", "memecoin", "xrp"],
+        },
+        {
+          id: "Y7XmBlCH_cE",
+          title:
+            "How I Make $300 Every 48Hours Trading Meme Coins on SOLANA with Mobile PHONE [STEP BY STEP TUTORIAL]",
+          channel: "Everyday Wealth",
+          duration: "36:55",
+          thumbnail: "https://i.ytimg.com/vi/Y7XmBlCH_cE/hqdefault.jpg",
+          views: "876K views",
+          timestamp: "2 weeks ago",
+          likes: 21400,
+          description:
+            "Full mobile-only strategy for consistent profits trading Solana memecoins. Works anywhere with just a smartphone and $100 starting capital.",
+          tags: ["solana", "mobile trading", "memecoins", "passive income"],
+        },
+        {
+          id: "9U2YHJlnEC0",
+          title: "Top 10 Solana Meme Coins To Buy Now !!!",
+          channel: "Only Investors",
+          duration: "6:59",
+          thumbnail: "https://i.ytimg.com/vi/9U2YHJlnEC0/hqdefault.jpg",
+          views: "356K views",
+          timestamp: "4 days ago",
+          likes: 12400,
+          description:
+            "Urgent update: These 10 Solana meme coins are showing strongest technicals and community growth for October 2024 entry points.",
+          tags: ["solana", "memecoins", "top 10", "buy now", "crypto"],
+        },
+        {
+          id: "NSnjYadism4",
+          title:
+            "Solana Meme Coins | Crypto Meme Coins | Best Solana Meme Coins",
+          channel: "Top Crypto",
+          duration: "6:58",
+          thumbnail: "https://i.ytimg.com/vi/NSnjYadism4/hqdefault.jpg",
+          views: "287K views",
+          timestamp: "1 week ago",
+          likes: 9800,
+          description:
+            "Comprehensive overview of the current Solana memecoin landscape - which projects have real potential versus pure hype.",
+          tags: ["solana", "memecoins", "crypto", "analysis", "best"],
+        },
+        {
+          id: "RDAIz1oI0CM",
+          title:
+            "TOP 5 MEMECOINS TO BUY NOW & Become a Millionaire in 2025! (Solana Meme Coins)",
+          channel: "BULLRUNNERS",
+          duration: "28:49",
+          thumbnail: "https://i.ytimg.com/vi/RDAIz1oI0CM/hqdefault.jpg",
+          views: "567K views",
+          timestamp: "3 weeks ago",
+          likes: 19800,
+          description:
+            "In-depth analysis of 5 Solana memecoins that could create millionaires by 2025 - includes entry points and price targets.",
+          tags: ["memecoins", "millionaire", "2025", "solana", "top 5"],
+        },
+        {
+          id: "zqLxL7JEI7g",
+          title:
+            "TRADING MEMECOINS FOR PROFIT | LIVE TRADING MEME COINS ON SOLANA & BNB",
+          channel: "Jerzy NFT",
+          duration: "3:58:00",
+          thumbnail: "https://i.ytimg.com/vi/zqLxL7JEI7g/hqdefault.jpg",
+          views: "1.1M views",
+          timestamp: "Streamed 1 day ago",
+          likes: 38700,
+          description:
+            "Extended live trading session covering both Solana and BNB Chain memecoins - real-time trades with explanations of strategy.",
+          tags: ["live trading", "memecoins", "solana", "bnb", "profit"],
+        },
+        {
+          id: "IOjrshmFpn0",
+          title: "10 MEMECOINS TO BUY NOW | Meme Coin Price Predictions (2025)",
+          channel: "Matt's Crypto",
+          duration: "28:49",
+          thumbnail: "https://i.ytimg.com/vi/IOjrshmFpn0/hqdefault.jpg",
+          views: "342K views",
+          timestamp: "1 week ago",
+          likes: 12400,
+          description:
+            "In-depth analysis of 10 meme coins with the highest potential for 2025 bull run, including price predictions and entry points.",
+          tags: [
+            "memecoins",
+            "2025",
+            "price prediction",
+            "crypto gems",
+            "altcoins",
+          ],
+        },
+        {
+          id: "QMV05ZLPtLo",
+          title:
+            "THE NEXT 100X SOLANA MEME COIN IS HERE! BUY THIS SOL GEM NOW?!",
+          channel: "99Bitcoins",
+          duration: "4:04",
+          thumbnail: "https://i.ytimg.com/vi/QMV05ZLPtLo/hqdefault.jpg",
+          views: "215K views",
+          timestamp: "2 days ago",
+          likes: 7800,
+          description:
+            "URGENT: New Solana meme coin showing identical patterns to previous 100x winners - analysis of whether to buy now.",
+          tags: ["solana", "memecoin", "100x", "urgent", "crypto gem"],
+        },
+        {
+          id: "bdhVJbYEJDA",
+          title: "Top 5 Solana Meme Coins to Watch in 2025!",
+          channel: "Crypto Sphere",
+          duration: "5:27",
+          thumbnail: "https://i.ytimg.com/vi/bdhVJbYEJDA/hqdefault.jpg",
+          views: "187K views",
+          timestamp: "3 days ago",
+          likes: 6800,
+          description:
+            "Curated list of 5 Solana meme coins with strongest fundamentals and community growth for 2025 bull market potential.",
+          tags: ["solana", "memecoins", "2025", "top 5", "crypto watchlist"],
+        },
+        {
+          id: "g_fh1Tu6HEI",
+          title:
+            "Make Money with this Simple Trading Strategy (Scalping Memecoins)",
+          channel: "leensx100",
+          duration: "15:01",
+          thumbnail: "https://i.ytimg.com/vi/g_fh1Tu6HEI/hqdefault.jpg",
+          views: "287K views",
+          timestamp: "1 week ago",
+          likes: 9800,
+          description:
+            "Simple yet effective scalping strategy for memecoins that works with small capital - perfect for beginners looking to make consistent profits.",
+          tags: [
+            "scalping",
+            "memecoins",
+            "trading strategy",
+            "beginner friendly",
+          ],
+        },
+        {
+          id: "f4xoDvpoC-Q",
+          title: "3 Ways I Make $500/day Trading Memecoins",
+          channel: "Crypto Vic",
+          duration: "22:18",
+          thumbnail: "https://i.ytimg.com/vi/f4xoDvpoC-Q/hqdefault.jpg",
+          views: "567K views",
+          timestamp: "2 weeks ago",
+          likes: 19800,
+          description:
+            "Detailed breakdown of my three most reliable methods for generating $500 daily from memecoin trading - includes risk management tips.",
+          tags: [
+            "$500/day",
+            "memecoin trading",
+            "income strategies",
+            "crypto profits",
+          ],
+        },
+        {
+          id: "MU8YPtUU9HI",
+          title: "MEME COIN TRADING Strategy That Made Me RICH Overnight",
+          channel: "King Crypto Trading",
+          duration: "14:01",
+          thumbnail: "https://i.ytimg.com/vi/MU8YPtUU9HI/hqdefault.jpg",
+          views: "1.2M views",
+          timestamp: "3 weeks ago",
+          likes: 42100,
+          description:
+            "The exact strategy I used to turn $1,000 into $50,000 overnight trading memecoins - high risk but high reward approach.",
+          tags: [
+            "get rich",
+            "overnight success",
+            "memecoin strategy",
+            "high risk",
+          ],
+        },
+        {
+          id: "2AiKAZ8VqX0",
+          title:
+            "GET 10X PROFITS WITH THIS PUMPFUN MEMECOIN TRADING STRATEGY & FILTERS!!! (YOU CANNOT LOSE WITH THIS)",
+          channel: "Crypto Chris",
+          duration: "10:00",
+          thumbnail: "https://i.ytimg.com/vi/2AiKAZ8VqX0/hqdefault.jpg",
+          views: "892K views",
+          timestamp: "1 month ago",
+          likes: 28700,
+          description:
+            "My proprietary PumpFun filters and trading strategy with 89% win rate - settings and configuration included for immediate use.",
+          tags: ["pumpfun", "10x profits", "trading filters", "no loss"],
+        },
+        {
+          id: "KJrRDJer8-0",
+          title: "Complete Meme Coin Trading Strategy in UNDER 10 Minutes",
+          channel: "⚡️TILLA⚡️",
+          duration: "8:58",
+          thumbnail: "https://i.ytimg.com/vi/KJrRDJer8-0/hqdefault.jpg",
+          views: "432K views",
+          timestamp: "5 days ago",
+          likes: 15400,
+          description:
+            "Condensed version of everything you need to know to start profitably trading memecoins - perfect for time-strapped traders.",
+          tags: [
+            "quick guide",
+            "memecoin trading",
+            "10 minute strategy",
+            "beginners",
+          ],
+        },
+        {
+          id: "3VK2Id8XvCY",
+          title: "I am Buying MORE $BRETT Meme Coin RIGHT NOW - Here's Why!",
+          channel: "Crypto June",
+          duration: "4:34",
+          thumbnail: "https://i.ytimg.com/vi/3VK2Id8XvCY/hqdefault.jpg",
+          views: "321K views",
+          timestamp: "2 days ago",
+          likes: 11200,
+          description:
+            "Urgent update on why I'm doubling down on my $BRETT position - technical analysis and upcoming catalysts explained.",
+          tags: ["BRETT", "memecoin", "buy alert", "technical analysis"],
+        },
+        {
+          id: "pvmkQ-R5_lQ",
+          title:
+            "Best Solana Memecoin Trading Strategy In 2025 (Best Memecoin Strategy 2025) Grow Small Account",
+          channel: "TheFinanceValueGuy",
+          duration: "17:40",
+          thumbnail: "https://i.ytimg.com/vi/pvmkQ-R5_lQ/hqdefault.jpg",
+          views: "412K views",
+          timestamp: "1 week ago",
+          likes: 14200,
+          description:
+            "Proven strategy for growing small accounts trading Solana memecoins - optimized for 2025 market conditions with backtested results.",
+          tags: [
+            "solana",
+            "2025 strategy",
+            "small account",
+            "memecoin trading",
+          ],
+        },
+        {
+          id: "3LmPzTlvAZs",
+          title: "The ONLY Guide You Need for Trading Memecoins",
+          channel: "GH0STEE",
+          duration: "22:45",
+          thumbnail: "https://i.ytimg.com/vi/3LmPzTlvAZs/hqdefault.jpg",
+          views: "765K views",
+          timestamp: "3 weeks ago",
+          likes: 25400,
+          description:
+            "Comprehensive A-Z guide covering everything from wallet setup to advanced trading tactics for memecoins across all chains.",
+          tags: [
+            "complete guide",
+            "memecoin trading",
+            "beginners to advanced",
+            "all chains",
+          ],
+        },
+        {
+          id: "3lV5ckJywu4",
+          title:
+            "How To Make Quick Profits SCALPING Memecoins (How To Scalp Memecoins 2025)",
+          channel: "TheFinanceValueGuy",
+          duration: "18:31",
+          thumbnail: "https://i.ytimg.com/vi/3lV5ckJywu4/hqdefault.jpg",
+          views: "356K views",
+          timestamp: "4 days ago",
+          likes: 12400,
+          description:
+            "Updated 2025 scalping strategy for memecoins - perfect for traders looking to make quick 5-10% profits multiple times daily.",
+          tags: ["scalping", "memecoins", "quick profits", "2025 strategy"],
+        },
+        {
+          id: "gM9FYuKH_mI",
+          title:
+            "This Meme Coin Strategy Should Be ILLEGAL (100% success rate)",
+          channel: "Nafbz",
+          duration: "8:10",
+          thumbnail: "https://i.ytimg.com/vi/gM9FYuKH_mI/hqdefault.jpg",
+          views: "1.4M views",
+          timestamp: "2 weeks ago",
+          likes: 52100,
+          description:
+            "Controversial but highly effective memecoin trading method that's worked on 37 consecutive trades - use at your own risk.",
+          tags: [
+            "illegal strategy",
+            "100% success",
+            "controversial",
+            "high win rate",
+          ],
+        },
+        {
+          id: "aC15PRg44dk",
+          title: "I Made $12,000 In 2 Hours Trading Meme Coins (as a beginner)",
+          channel: "MoMike Chamberlin",
+          duration: "25:09",
+          thumbnail: "https://i.ytimg.com/vi/aC15PRg44dk/hqdefault.jpg",
+          views: "1.8M views",
+          timestamp: "1 month ago",
+          likes: 65400,
+          description:
+            "Exactly how I turned $500 into $12,500 in just 2 hours as a complete beginner - trade breakdown and lessons learned.",
+          tags: [
+            "beginner success",
+            "$12k profit",
+            "memecoin trading",
+            "case study",
+          ],
+        },
+        {
+          id: "rNqEXb6e_Rk",
+          title:
+            "How To Turn $1 Into $1000's With Memecoins (Full Trading Guide)",
+          channel: "Brayden Robertson",
+          duration: "23:51",
+          thumbnail: "https://i.ytimg.com/vi/rNqEXb6e_Rk/hqdefault.jpg",
+          views: "987K views",
+          timestamp: "3 weeks ago",
+          likes: 32100,
+          description:
+            "Complete guide to turning micro-capital into life-changing money using precise memecoin trading strategies - works with just $1.",
+          tags: [
+            "$1 challenge",
+            "micro capital",
+            "memecoin guide",
+            "life-changing money",
+          ],
+        },
+        {
+          id: "_8118Rj8Giw",
+          title: "How To Use GMGN AI To Make $500 EVERY Day Meme Coin Trading",
+          channel: "Smith",
+          duration: "27:30",
+          thumbnail: "https://i.ytimg.com/vi/_8118Rj8Giw/hqdefault.jpg",
+          views: "678K views",
+          timestamp: "2 weeks ago",
+          likes: 22400,
+          description:
+            "Step-by-step setup for GMGN AI trading bot that consistently generates $500 daily profits from memecoin volatility.",
+          tags: ["GMGN AI", "trading bot", "$500/day", "automated trading"],
+        },
+        {
+          id: "QU3ZMYQkGag",
+          title:
+            "The Most Profitable Memecoin Trading Strategy (Dollar Cost Averaging Guide)",
+          channel: "Ash Robin",
+          duration: "13:15",
+          thumbnail: "https://i.ytimg.com/vi/QU3ZMYQkGag/hqdefault.jpg",
+          views: "412K views",
+          timestamp: "1 week ago",
+          likes: 14200,
+          description:
+            "How I use modified dollar cost averaging to generate consistent profits from memecoins with minimal risk.",
+          tags: ["DCA", "low risk", "memecoin strategy", "consistent profits"],
+        },
+        {
+          id: "Rai_5MhKkmA",
+          title:
+            "LIVE Scanning Memecoins | My Thought Process (REAL TALK EP.1)",
+          channel: "RED",
+          duration: "1:11:08",
+          thumbnail: "https://i.ytimg.com/vi/Rai_5MhKkmA/hqdefault.jpg",
+          views: "356K views",
+          timestamp: "Streamed 2 days ago",
+          likes: 12400,
+          description:
+            "Unedited live session showing exactly how I scan and evaluate hundreds of memecoins to find the best trading opportunities.",
+          tags: [
+            "live scanning",
+            "thought process",
+            "memecoin analysis",
+            "real talk",
+          ],
+        },
+        {
+          id: "Zd_0AAHrMNw",
+          title: "I Turned $2,000 Into $25,000 In 1 WEEK Trading Memecoins",
+          channel: "Orangie Web3",
+          duration: "40:05",
+          thumbnail: "https://i.ytimg.com/vi/Zd_0AAHrMNw/hqdefault.jpg",
+          views: "1.1M views",
+          timestamp: "3 weeks ago",
+          likes: 38700,
+          description:
+            "Complete breakdown of the 12.5x trade that changed my life - includes exact entries, exits, and emotional journey.",
+          tags: [
+            "$2k to $25k",
+            "life-changing trade",
+            "memecoin success",
+            "case study",
+          ],
+        },
+        {
+          id: "bNZnLku_zWw",
+          title: "I FOUND THE BEST Pump Fun Memecoin Trading Strategy",
+          channel: "Ducky",
+          duration: "15:37",
+          thumbnail: "https://i.ytimg.com/vi/bNZnLku_zWw/hqdefault.jpg",
+          views: "523K views",
+          timestamp: "5 days ago",
+          likes: 18400,
+          description:
+            "After testing 37 different approaches, this Pump Fun strategy yielded 92% win rate with average 5.8x returns.",
+          tags: [
+            "pump fun",
+            "best strategy",
+            "high win rate",
+            "memecoin trading",
+          ],
+        },
+        {
+          id: "8cZ4iZRCnxE",
+          title:
+            "Spot 5X Memecoins Trading ONLY NEW PAIRS [BullX NEO Pump Fun Strategy]",
+          channel: "Sajad",
+          duration: "14:47",
+          thumbnail: "https://i.ytimg.com/vi/8cZ4iZRCnxE/hqdefault.jpg",
+          views: "287K views",
+          timestamp: "1 week ago",
+          likes: 9800,
+          description:
+            "My proprietary method for identifying 5x opportunities within minutes of new pair listings using BullX NEO filters.",
+          tags: ["5x trades", "new pairs", "bullx neo", "pump fun"],
+        },
+        {
+          id: "tlThreRvZXM",
+          title:
+            "Memecoin Millionaire at 17: How to Spot Trends Early and Get Rich in 2025",
+          channel: "Jack Neel",
+          duration: "2:37:59",
+          thumbnail: "https://i.ytimg.com/vi/tlThreRvZXM/hqdefault.jpg",
+          views: "892K views",
+          timestamp: "1 month ago",
+          likes: 32100,
+          description:
+            "How I became a millionaire trading memecoins as a teenager - complete guide to identifying trends before they go mainstream.",
+          tags: [
+            "teen millionaire",
+            "trend spotting",
+            "2025 strategy",
+            "memecoin wealth",
+          ],
+        },
+        {
+          id: "JRvC0WjUmw8",
+          title: "Meme Coin Trading Challenge – My Strategy & Journey",
+          channel: "OnlineBoss-Crypto",
+          duration: "10:50",
+          thumbnail: "https://i.ytimg.com/vi/JRvC0WjUmw8/hqdefault.jpg",
+          views: "198K views",
+          timestamp: "3 days ago",
+          likes: 7200,
+          description:
+            "30-day challenge to turn $100 into $10,000 - daily updates on strategy adjustments and emotional rollercoaster.",
+          tags: [
+            "trading challenge",
+            "journey",
+            "memecoin strategy",
+            "$100 challenge",
+          ],
+        },
+        {
+          id: "DIQarDjU2Tw",
+          title:
+            "How I Made $14,000 In 5 Minuets On BNB Meme Coins [Full Step By Step Guide]",
+          channel: "The Krypto King",
+          duration: "32:42",
+          thumbnail: "https://i.ytimg.com/vi/DIQarDjU2Tw/hqdefault.jpg",
+          views: "765K views",
+          timestamp: "2 weeks ago",
+          likes: 25400,
+          description:
+            "The exact 5-minute trade that generated $14k profit on BNB Chain - complete replay with commentary on decision points.",
+          tags: ["BNB chain", "$14k profit", "5 minute trade", "case study"],
+        },
+        {
+          id: "3aSJaSXmKYM",
+          title:
+            "How To Launch a Memecoin and Make 225K in 5 hours (WITH PROOF)",
+          channel: "Crypto hack University",
+          duration: "7:24",
+          thumbnail: "https://i.ytimg.com/vi/3aSJaSXmKYM/hqdefault.jpg",
+          views: "1.5M views",
+          timestamp: "1 month ago",
+          likes: 58700,
+          description:
+            "Educational case study showing how some creators generate massive profits from memecoin launches - includes revenue proof.",
+          tags: [
+            "memecoin launch",
+            "$225k profit",
+            "case study",
+            "educational",
+          ],
+        },
+        {
+          id: "ZnDXIIP1cTI",
+          title:
+            "How To Track & Copy Good Solana Memecoin Traders | 100X Strategy Guide",
+          channel: "⚡️TILLA⚡️",
+          duration: "16:49",
+          thumbnail: "https://i.ytimg.com/vi/ZnDXIIP1cTI/hqdefault.jpg",
+          views: "321K views",
+          timestamp: "1 week ago",
+          likes: 11200,
+          description:
+            "Complete guide to identifying and copying the most successful Solana memecoin traders for consistent 100x opportunities.",
+          tags: ["copy trading", "solana", "100x strategy", "whale tracking"],
+        },
+        {
+          id: "6r0QOQWy-Ug",
+          title: "How to Identify Memecoin Scams with 100% Accuracy",
+          channel: "Crypto Vic",
+          duration: "23:17",
+          thumbnail: "https://i.ytimg.com/vi/6r0QOQWy-Ug/hqdefault.jpg",
+          views: "412K views",
+          timestamp: "2 weeks ago",
+          likes: 14200,
+          description:
+            "My foolproof method for spotting memecoin scams before you invest - has prevented 100% of bad investments since implementation.",
+          tags: ["scam detection", "memecoins", "safety", "100% accurate"],
+        },
+        {
+          id: "BPOJA_kGnB8",
+          title:
+            "How to ACTUALLY Rug Memecoins on Pump.Fun (educational purposes)",
+          channel: "1teer Crypto",
+          duration: "16:02",
+          thumbnail: "https://i.ytimg.com/vi/BPOJA_kGnB8/hqdefault.jpg",
+          views: "287K views",
+          timestamp: "3 weeks ago",
+          likes: 9800,
+          description:
+            "WARNING: Educational demonstration only. Showing how rug pulls work on Pump.Fun to help traders recognize and avoid them.",
+          tags: ["rug pull", "educational", "pump.fun", "scam prevention"],
+        },
+        {
+          id: "zFYzslmMFSQ",
+          title:
+            "How To Buy Memecoins BEFORE They Explode [FULL BEGINNERS GUIDE]",
+          channel: "Champ",
+          duration: "19:39",
+          thumbnail: "https://i.ytimg.com/vi/zFYzslmMFSQ/hqdefault.jpg",
+          views: "876K views",
+          timestamp: "1 month ago",
+          likes: 32400,
+          description:
+            "Beginner-friendly guide to finding and investing in memecoins before they go viral - includes tools and indicators I use.",
+          tags: [
+            "early investing",
+            "beginners guide",
+            "memecoins",
+            "before explosion",
+          ],
+        },
+        {
+          id: "7f8csi_W91c",
+          title: "How To Make 2 SOLANA PER DAY Frontrunning Trends",
+          channel: "Sajad",
+          duration: "23:21",
+          thumbnail: "https://i.ytimg.com/vi/7f8csi_W91c/hqdefault.jpg",
+          views: "356K views",
+          timestamp: "5 days ago",
+          likes: 12400,
+          description:
+            "Consistent method for generating 2 SOL daily by identifying and frontrunning emerging memecoin trends on Solana.",
+          tags: ["2 sol daily", "frontrunning", "trend trading", "solana"],
+        },
+        {
+          id: "Zs41fuuFzhg",
+          title:
+            "How to Trade Meme Coins for Beginners | How to Trade Meme Coins on Solana, Binance & Pump.Fun",
+          channel: "crypto Insider USA",
+          duration: "5:04",
+          thumbnail: "https://i.ytimg.com/vi/Zs41fuuFzhg/hqdefault.jpg",
+          views: "128K views",
+          timestamp: "3 days ago",
+          likes: 4200,
+          description:
+            "Quick-start guide for absolute beginners covering memecoin trading basics across multiple platforms.",
+          tags: ["beginners guide", "solana", "binance", "pump.fun"],
+        },
+        {
+          id: "hYom1YCbHyQ",
+          title:
+            "How to ACTUALLY make money trading Memecoins (Insider Secrets)",
+          channel: "Liam James Kay",
+          duration: "24:43",
+          thumbnail: "https://i.ytimg.com/vi/hYom1YCbHyQ/hqdefault.jpg",
+          views: "1.2M views",
+          timestamp: "2 weeks ago",
+          likes: 42100,
+          description:
+            "Little-known insider techniques that professional memecoin traders use to generate consistent profits - not for beginners.",
+          tags: [
+            "insider secrets",
+            "professional techniques",
+            "memecoin trading",
+            "advanced",
+          ],
+        },
+      ];
+
+      // Sample comments data
+      const comments = [
+        {
+          id: 1,
+          author: "Crypto Enthusiast",
+          avatar: "https://i.imgur.com/JqYeSvn.jpg",
+          text: "Great analysis! I also believe in DOGE, holding since 2021 and not planning to sell!",
+          date: "2 days ago",
+          likes: 42,
+          liked: false,
+        },
+        {
+          id: 2,
+          author: "Pro Trader",
+          avatar: "https://i.imgur.com/3QX3JwY.jpg",
+          text: "Memecoins are pure gamble. 90% of people lose money on this. Be careful!",
+          date: "1 day ago",
+          likes: 15,
+          liked: true,
+        },
+        {
+          id: 3,
+          author: "Moon Lover",
+          avatar: "https://i.imgur.com/5X3Wk7D.jpg",
+          text: "DOGE to the moon!!! 🚀🌕 Bought more on the dip, waiting for x10!",
+          date: "12 hours ago",
+          likes: 28,
+          liked: false,
+        },
+      ];
+
+      // Определяем функцию showSection перед её использованием
+      function showSection(section) {
+        currentSection = section;
+
+        // Update sidebar active item
+        document.querySelectorAll(".sidebar-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+
+        // Set correct active item based on section
+        let activeIndex = 0;
+        switch (section) {
+          case "home":
+            activeIndex = 0;
+            break;
+          case "trending":
+            activeIndex = 1;
+            break;
+          case "subscriptions":
+            activeIndex = 2;
+            break;
+          case "library":
+            activeIndex = 3;
+            break;
+          case "history":
+            activeIndex = 4;
+            break;
+          case "watch-later":
+            activeIndex = 5;
+            break;
+          case "liked":
+            activeIndex = 6;
+            break;
+        }
+
+        const sidebarItems = document.querySelectorAll(".sidebar-item");
+        if (sidebarItems[activeIndex]) {
+          sidebarItems[activeIndex].classList.add("active");
+        }
+
+        // Hide all pages
+        document.querySelectorAll('[id$="-page"]').forEach((el) => {
+          el.style.display = "none";
+        });
+
+        // Show selected page
+        document.getElementById(`${section}-page`).style.display = "block";
+
+        // Load appropriate content
+        switch (section) {
+          case "home":
+            loadVideos();
+            break;
+          case "trending":
+            loadTrending();
+            break;
+          case "subscriptions":
+            loadSubscriptions();
+            break;
+          case "library":
+            loadLibrary();
+            break;
+          case "history":
+            loadHistory();
+            break;
+          case "watch-later":
+            loadWatchLater();
+            break;
+          case "liked":
+            loadLikedVideos();
+            break;
+        }
+
+        // On mobile, hide sidebar after selection
+        if (window.innerWidth <= 768) {
+          toggleSidebar();
+        }
+      }
+
+      // Делаем функцию доступной глобально
+      window.showSection = showSection;
+
+      // Инициализация после загрузки страницы
+      window.onload = function () {
+        loadFromLocalStorage();
+        loadVideos();
+
+        // Устанавливаем обработчики событий
+        document
+          .getElementById("search-input")
+          .addEventListener("keypress", function (e) {
+            if (e.key === "Enter") performSearch();
+          });
+
+        document
+          .getElementById("like-button")
+          .addEventListener("click", saveLikedVideos);
+        document
+          .getElementById("subscribe-button")
+          .addEventListener("click", saveSubscriptions);
+        document
+          .getElementById("save-button")
+          .addEventListener("click", saveWatchLater);
+
+        // Показываем домашнюю страницу по умолчанию
+        showSection("home");
+
+        // На мобильных сворачиваем сайдбар
+        if (window.innerWidth <= 768) {
+          document.body.classList.add("collapsed-sidebar");
+          sidebarCollapsed = true;
+        }
+      };
+
+      // Current state
+      let currentVideoId = null;
+      let currentSection = "home";
+      let sidebarCollapsed = false;
+
+      // Load videos on home page
+      function loadVideos() {
+        const videoGrid = document.getElementById("video-grid");
+        videoGrid.innerHTML = "";
+
+        videos.forEach((video) => {
+          const videoCard = createVideoCard(video);
+          videoGrid.appendChild(videoCard);
+        });
+      }
+
+      function getChannel(channel) {
+        let channelAva = {
+          "Orangie Web3": "./ava/orangie.jpg",
+          "INFOtime": "./ava/infoTime.jpg",
+
+          "Bitcoin & Altcoins Price Analysis": "./ava/bitcoin.jpg",
+
+          "Champ": "./ava/champ.jpg",
+
+          "Alex Choi Crypto": "./ava/alexChoi.jpg",
+
+          "Mr.Profit": "./ava/mrprofit.jpg",
+
+          "Firstpost": "./ava/firstpost.jpg",
+
+          "Jerzy NFT": "./ava/jerzy.jpg",
+
+          "EducationalPasha": "./ava/EducationalPasha.jpg",
+
+          "sajad": "./ava/sajad.jpg",
+
+          "Crypto Gorilla": "./ava/CryptoGorilla.jpg",
+
+          "iCoin": "./ava/iCoin.jpg",
+
+          "Handsome Finance": "./ava/HandsomeFinance.jpg",
+
+          "Ali Solanki": "./ava/AliSolanki.jpg",
+
+          "TOKEN2049": "./ava/TOKEN2049.jpg",
+
+          "RED": "./ava/RED.jpg",
+
+          "Daniel McEvoy": "./ava/DanielMcEvoy.jpg",
+
+          "Zack Ventura": "./ava/ZackVentura.jpg",
+
+          "Greeny": "./ava/Greeny.jpg",
+
+          "Across The Rubicon": "./ava/AcrossTheRubicon.jpg",
+          "Crypto Kai": "./ava/CryptoKai.jpg",
+  "K Crypto": "./ava/KCrypto.jpg",
+  "Everyday Wealth": "./ava/EverydayWealth.jpg",
+  "More Crypto Online": "./ava/MoreCryptoOnline.jpg",
+  "Crypto Jebb": "./ava/CryptoJebb.jpg",
+  "Baird Business": "./ava/BairdBusiness.jpg",
+  "Crypto Lightskin": "./ava/CryptoLightskin.jpg",
+  "Insyder Crypto": "./ava/InsyderCrypto.jpg",
+  "TheFinanceValueGuy": "./ava/TheFinanceValueGuy.jpg",
+  "Crypto Chris": "./ava/CryptoChris.jpg",
+  "Terp Trading": "./ava/TerpTrading.jpg",
+  "No Bs Crypto": "./ava/NoBsCrypto.jpg",
+  "CryptoZin": "./ava/CryptoZin.jpg",
+  "Liam James Kay": "./ava/LiamJamesKay.jpg",
+  "CoinGecko": "./ava/CoinGecko.jpg",
+  "Coinsider": "./ava/Coinsider.jpg",
+  "Crypto Ninja": "./ava/CryptoNinja.jpg",
+  "Savvy Minds Connect": "./ava/SavvyMindsConnect.jpg",
+  "Nico": "./ava/Nico.jpg",
+  "Leck": "./ava/Leck.jpg",
+  "Michael Wrubel": "./ava/MichaelWrubel.jpg",
+  "The Krypto King": "./ava/TheKryptoKing.jpg",
+  "Crypto Empire": "./ava/CryptoEmpire.jpg",
+  "Crypto Trend": "./ava/CryptoTrend.jpg",
+  "Nazza Crypto": "./ava/NazzaCrypto.jpg",
+  "ItsRagnar": "./ava/ItsRagnar.jpg",
+  "Crypto Vic": "./ava/CryptoVic.jpg",
+  "Alessandro De Crypto": "./ava/AlessandroDeCrypto.jpg",
+  "Crypto Hype - Daily Crypto News": "./ava/CryptoHype-DailyCryptoNews.jpg",
+  "Guilherme Rezzadori": "./ava/GuilhermeRezzadori.jpg",
+  "Crypto Never Sleeps": "./ava/CryptoNeverSleeps.jpg",
+  "99Bitcoins": "./ava/99Bitcoins.jpg",
+  "Coin Bureau": "./ava/CoinBureau.jpg",
+  "Only Investors": "./ava/OnlyInvestors.jpg",
+  "Brett Malinowski": "./ava/BrettMalinowski.jpg",
+  "Jon Trading": "./ava/JonTrading.jpg",
+  "Matt's Crypto": "./ava/MattsCrypto.jpg",
+  "Crypto Sphere": "./ava/CryptoSphere.jpg",
+  "leensx100": "./ava/leensx100.jpg",
+  "King Crypto Trading": "./ava/KingCryptoTrading.jpg",
+  "⚡️TILLA⚡️": "./ava/TILLA.jpg",
+  "Crypto June": "./ava/CryptoJune.jpg",
+  "GH0STEE": "./ava/GH0STEE.jpg",
+  "Nafbz": "./ava/Nafbz.jpg",
+  "MoMike Chamberlin": "./ava/MoMikeChamberlin.jpg",
+  "Brayden Robertson": "./ava/BraydenRobertson.jpg",
+  "Smith": "./ava/Smith.jpg",
+  "Ash Robin": "./ava/AshRobin.jpg",
+  "Ducky": "./ava/Ducky.jpg",
+  "Jack Neel": "./ava/JackNeel.jpg",
+  "OnlineBoss-Crypto": "./ava/OnlineBoss-Crypto.jpg",
+  "Crypto hack University": "./ava/CryptohackUniversity.jpg",
+  "1teer Crypto": "./ava/1teerCrypto.jpg",
+  "crypto Insider USA": "./ava/cryptoInsiderUSA.jpg",
+  "Sajad" : "./ava/sajad.jpg",
+  "XRP news today": "./ava/XRPnewstoday.jpg",
+  "foz": "./ava/foz.jpg",
+  "Top Crypto": "./ava/TopCrypto.jpg",
+        };
+        
+        return channelAva[channel];
+      }
+
+      // Create video card element
+      function createVideoCard(video) {
+        const videoCard = document.createElement("div");
+        videoCard.className = "video-card";
+
+        videoCard.innerHTML = `
+                <div class="thumbnail" onclick="openVideo('${video.id}')">
+                    <img src="${video.thumbnail}" 
+                         alt="${video.title}"
+                         onerror="this.onerror=null;this.src='https://via.placeholder.com/300x169?text=No+Thumbnail';">
+                    <div class="video-duration">${video.duration}</div>
+                </div>
+                <div class="video-info">
+                    <div class="video-title" onclick="openVideo('${video.id}')">${video.title}</div>
+                    <div class="video-channel">
+                        <img src="${getChannel(video.channel)}" alt="Channel">
+                        <span>${video.channel}</span>
+                    </div>
+                    <div class="video-stats">
+                        <span>${video.views} views</span>
+                        <span>${video.date}</span>
+                    </div>
+                </div>
+            `;
+        return videoCard;
+      }
+
+      // Open video page
+      function openVideo(videoId) {
+        const video = videos.find((v) => v.id === videoId);
+        if (!video) return;
+
+        // Add to history
+        video.watched = true;
+        addToHistory(videoId);
+
+        // Update current video
+        currentVideoId = videoId;
+
+        // Hide all sections and show video page
+        document.querySelectorAll('[id$="-page"]').forEach((el) => {
+          el.style.display = "none";
+        });
+        document.getElementById("video-page").style.display = "block";
+
+        // Update video page content
+        document.getElementById(
+          "video-iframe"
+        ).src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        document.getElementById("video-page-title").textContent = video.title;
+        document.getElementById(
+          "video-views"
+        ).textContent = `${video.views} views`;
+        document.getElementById("video-date").textContent = video.date;
+        document.getElementById("avachannel").src = getChannel(video.channel);
+        document.getElementById("like-count").textContent = video.likes;
+        document.getElementById("dislike-count").textContent = video.dislikes;
+        document.getElementById("video-description-text").textContent =
+          video.description;
+
+       // В функции openVideo() замените блок с кнопкой подписки на:
+const subscribeButton = document.getElementById("subscribe-button");
+const isSubscribed = videos.some(v => v.channel === video.channel && v.subscribed);
+subscribeButton.textContent = isSubscribed ? "Subscribed" : "Subscribe";
+subscribeButton.className = isSubscribed ? "subscribe-button subscribed" : "subscribe-button";
+
+        const likeButton = document.getElementById("like-button");
+        likeButton.classList.toggle("active", video.liked);
+
+        const saveButton = document.getElementById("save-button");
+        saveButton.innerHTML = video.saved
+          ? '<span class="material-icons">playlist_add_check</span><span>Saved</span>'
+          : '<span class="material-icons">playlist_add</span><span>Save</span>';
+
+        loadComments();
+      }
+
+      // Load comments
+      function loadComments() {
+        const commentsContainer = document.getElementById("comments-container");
+        commentsContainer.innerHTML = "";
+
+        comments.forEach((comment) => {
+          const commentElement = document.createElement("div");
+          commentElement.className = "comment";
+          commentElement.innerHTML = `
+                    <img src="${comment.avatar}" alt="${
+            comment.author
+          }" class="comment-avatar">
+                    <div class="comment-content">
+                        <div class="comment-author">${comment.author}</div>
+                        <div class="comment-text">${comment.text}</div>
+                        <div class="comment-actions">
+                            <span class="comment-action like-comment" onclick="toggleLikeComment(${
+                              comment.id
+                            })">
+                                <span class="material-icons" style="font-size: 16px; vertical-align: middle;">${
+                                  comment.liked
+                                    ? "thumb_up"
+                                    : "thumb_up_off_alt"
+                                }</span>
+                                ${comment.likes}
+                            </span>
+                            <span class="comment-action">Reply</span>
+                            <span class="comment-action">${comment.date}</span>
+                        </div>
+                    </div>
+                `;
+          commentsContainer.appendChild(commentElement);
+        });
+      }
+
+      // Toggle like on comment
+      function toggleLikeComment(commentId) {
+        const comment = comments.find((c) => c.id === commentId);
+        if (!comment) return;
+
+        comment.liked = !comment.liked;
+        comment.likes += comment.liked ? 1 : -1;
+        loadComments();
+      }
+
+      // Toggle like on video
+      document
+        .getElementById("like-button")
+        .addEventListener("click", function () {
+          const video = videos.find((v) => v.id === currentVideoId);
+          if (!video) return;
+
+          video.liked = !video.liked;
+          this.classList.toggle("active", video.liked);
+
+          // Update like count display
+          const likeCount = document.getElementById("like-count");
+          const currentCount = parseInt(
+            likeCount.textContent.replace(/[^\d]/g, "")
+          );
+          likeCount.textContent = video.liked
+            ? `${currentCount + 1}K`
+            : `${currentCount - 1}K`;
+
+          // Save liked videos
+          saveLikedVideos();
+
+          // Reset dislike if it was active
+          const dislikeButton = document.getElementById("dislike-button");
+          if (dislikeButton.classList.contains("active")) {
+            dislikeButton.classList.remove("active");
+            const dislikeCount = document.getElementById("dislike-count");
+            const currentDislikeCount = parseInt(
+              dislikeCount.textContent.replace(/[^\d]/g, "")
+            );
+            dislikeCount.textContent = `${currentDislikeCount - 1}`;
+          }
+        });
+
+      // Toggle dislike on video
+      document
+        .getElementById("dislike-button")
+        .addEventListener("click", function () {
+          this.classList.toggle("active");
+          const dislikeCount = document.getElementById("dislike-count");
+          const currentCount = parseInt(
+            dislikeCount.textContent.replace(/[^\d]/g, "")
+          );
+          dislikeCount.textContent = this.classList.contains("active")
+            ? currentCount + 1
+            : currentCount - 1;
+
+          // Reset like if it was active
+          const likeButton = document.getElementById("like-button");
+          if (likeButton.classList.contains("active")) {
+            likeButton.classList.remove("active");
+            const video = videos.find((v) => v.id === currentVideoId);
+            if (video) video.liked = false;
+
+            const likeCount = document.getElementById("like-count");
+            const currentLikeCount = parseInt(
+              likeCount.textContent.replace(/[^\d]/g, "")
+            );
+            likeCount.textContent = `${currentLikeCount - 1}K`;
+
+            // Save liked videos
+            saveLikedVideos();
+          }
+        });
+
+  // Toggle subscribe to channel
+  document.getElementById("subscribe-button").addEventListener("click", function() {
+  const video = videos.find(v => v.id === currentVideoId);
+  if (!video) return;
+
+  // Определяем текущее состояние подписки на канал
+  const isSubscribed = videos.some(v => v.channel === video.channel && v.subscribed);
+  
+  // Обновляем подписку для всех видео канала
+  videos.forEach(v => {
+    if (v.channel === video.channel) {
+      v.subscribed = !isSubscribed;
+    }
+  });
+
+  // Обновляем кнопку
+  this.classList.toggle("subscribed", !isSubscribed);
+  this.textContent = !isSubscribed ? "Subscribed" : "Subscribe";
+
+  // Сохраняем и обновляем сайдбар
+  saveSubscriptions();
+  updateSubscriptionsSidebar();
+});
+      // Toggle save to watch later
+      document
+        .getElementById("save-button")
+        .addEventListener("click", function () {
+          const video = videos.find((v) => v.id === currentVideoId);
+          if (!video) return;
+
+          video.saved = !video.saved;
+          this.innerHTML = video.saved
+            ? '<span class="material-icons">playlist_add_check</span><span>Saved</span>'
+            : '<span class="material-icons">playlist_add</span><span>Save</span>';
+
+          // Save to local storage
+          saveWatchLater();
+        });
+
+      // Add comment
+      document
+        .getElementById("comment-input")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter" && this.value.trim()) {
+            const newComment = {
+              id: comments.length + 1,
+              author: "You",
+              avatar: "https://i.imgur.com/JqYeSvn.jpg",
+              text: this.value.trim(),
+              date: "Just now",
+              likes: 0,
+              liked: false,
+            };
+
+            comments.unshift(newComment);
+            loadComments();
+            this.value = "";
+          }
+        });
+
+      // Search functionality
+      function performSearch() {
+        const searchTerm = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const resultsContainer = document.getElementById("search-results");
+
+        if (searchTerm.length < 2) {
+          resultsContainer.style.display = "none";
+          return;
+        }
+
+        const matchedVideos = videos
+          .filter(
+            (video) =>
+              video.title.toLowerCase().includes(searchTerm) ||
+              video.channel.toLowerCase().includes(searchTerm)
+          )
+          .slice(0, 5);
+
+        if (matchedVideos.length === 0) {
+          resultsContainer.style.display = "none";
+          return;
+        }
+
+        resultsContainer.innerHTML = "";
+        matchedVideos.forEach((video) => {
+          const resultItem = document.createElement("div");
+          resultItem.className = "search-result-item";
+          resultItem.innerHTML = `
+                    <div style="display: flex; align-items: center;">
+                        <span class="material-icons" style="margin-right: 0.5rem; color: #666;">search</span>
+                        <span>${video.title}</span>
+                    </div>
+                `;
+          resultItem.addEventListener("click", () => {
+            openVideo(video.id);
+            resultsContainer.style.display = "none";
+            document.getElementById("search-input").value = "";
+          });
+          resultsContainer.appendChild(resultItem);
+        });
+
+        resultsContainer.style.display = "block";
+      }
+
+      // Hide search results when clicking outside
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".search-container")) {
+          document.getElementById("search-results").style.display = "none";
+        }
+      });
+
+      // Load trending videos
+      function loadTrending() {
+        const trendingGrid = document.getElementById("trending-grid");
+        trendingGrid.innerHTML = "";
+
+        // Sort by views and take top 6
+        const trendingVideos = [...videos]
+          .sort((a, b) => parseInt(b.views) - parseInt(a.views))
+          .slice(0, 6);
+
+        trendingVideos.forEach((video) => {
+          const videoCard = createVideoCard(video);
+          trendingGrid.appendChild(videoCard);
+        });
+      }
+
+      // Load subscription videos
+      function loadSubscriptions() {
+        const subscriptionsGrid = document.getElementById("subscriptions-grid");
+        subscriptionsGrid.innerHTML = "";
+
+        const subscribedVideos = videos.filter((video) => video.subscribed);
+
+        if (subscribedVideos.length === 0) {
+          subscriptionsGrid.innerHTML =
+            '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">You have no subscriptions yet</div>';
+          return;
+        }
+
+        subscribedVideos.forEach((video) => {
+          const videoCard = createVideoCard(video);
+          subscriptionsGrid.appendChild(videoCard);
+        });
+      }
+
+      // Load library
+      function loadLibrary() {
+        const libraryGrid = document.getElementById("library-grid");
+        libraryGrid.innerHTML =
+          '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">Your library is empty</div>';
+      }
+
+      // Load history
+      function loadHistory() {
+        const historyGrid = document.getElementById("history-grid");
+        historyGrid.innerHTML = "";
+
+        const historyVideos = videos.filter((video) => video.watched);
+
+        if (historyVideos.length === 0) {
+          historyGrid.innerHTML =
+            '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">Your watch history is empty</div>';
+          return;
+        }
+
+        historyVideos.forEach((video) => {
+          const videoCard = createVideoCard(video);
+          historyGrid.appendChild(videoCard);
+        });
+      }
+
+      // Load watch later
+      function loadWatchLater() {
+        const watchLaterGrid = document.getElementById("watch-later-grid");
+        watchLaterGrid.innerHTML = "";
+
+        const watchLaterVideos = videos.filter((video) => video.saved);
+
+        if (watchLaterVideos.length === 0) {
+          watchLaterGrid.innerHTML =
+            '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">Your Watch Later list is empty</div>';
+          return;
+        }
+
+        watchLaterVideos.forEach((video) => {
+          const videoCard = createVideoCard(video);
+          watchLaterGrid.appendChild(videoCard);
+        });
+      }
+
+      // Load liked videos
+      function loadLikedVideos() {
+        const likedGrid = document.getElementById("liked-grid");
+        likedGrid.innerHTML = "";
+
+        const likedVideos = videos.filter((video) => video.liked);
+
+        if (likedVideos.length === 0) {
+          likedGrid.innerHTML =
+            '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">You have no liked videos yet</div>';
+          return;
+        }
+
+        likedVideos.forEach((video) => {
+          const videoCard = createVideoCard(video);
+          likedGrid.appendChild(videoCard);
+        });
+      }
+
+      // Add video to history
+      function addToHistory(videoId) {
+        const video = videos.find((v) => v.id === videoId);
+        if (!video) return;
+
+        video.watched = true;
+        localStorage.setItem(
+          "TrenchessTube-history",
+          JSON.stringify(videos.filter((v) => v.watched).map((v) => v.id))
+        );
+      }
+
+      // Save subscriptions to local storage
+      function saveSubscriptions() {
+  // Сохраняем только уникальные ID видео подписанных каналов
+  const subscribedChannels = [...new Set(
+    videos.filter(v => v.subscribed).map(v => v.channel)
+  )];
+  
+  const subscribedVideoIds = videos
+    .filter(v => subscribedChannels.includes(v.channel))
+    .map(v => v.id);
+    
+  localStorage.setItem(
+    "TrenchessTube-subscriptions",
+    JSON.stringify(subscribedVideoIds)
+  );
+}
+
+      // Save watch later to local storage
+      function saveWatchLater() {
+        localStorage.setItem(
+          "TrenchessTube-watch-later",
+          JSON.stringify(videos.filter((v) => v.saved).map((v) => v.id))
+        );
+      }
+
+      // Save liked videos to local storage
+      function saveLikedVideos() {
+        localStorage.setItem(
+          "TrenchessTube-liked",
+          JSON.stringify(videos.filter((v) => v.liked).map((v) => v.id))
+        );
+      }
+
+      // Load all data from local storage
+     // Load all data from local storage
+function loadFromLocalStorage() {
+  // Load subscriptions
+  const savedSubscriptions = localStorage.getItem("TrenchessTube-subscriptions");
+  if (savedSubscriptions) {
+    const subscribedVideoIds = JSON.parse(savedSubscriptions);
+    
+    // Находим каналы подписанных видео
+    const subscribedChannels = [...new Set(
+      videos.filter(v => subscribedVideoIds.includes(v.id)).map(v => v.channel)
+    )];
+    
+    // Подписываемся на все видео этих каналов
+    videos.forEach(video => {
+      video.subscribed = subscribedChannels.includes(video.channel);
+    });
+  }
+  // Остальной код функции остается без изменений...
+  // Load watch later
+  const savedWatchLater = localStorage.getItem("TrenchessTube-watch-later");
+  if (savedWatchLater) {
+    const watchLaterIds = JSON.parse(savedWatchLater);
+    videos.forEach((video) => {
+      video.saved = watchLaterIds.includes(video.id);
+    });
+  }
+
+  // Load liked videos
+  const savedLiked = localStorage.getItem("TrenchessTube-liked");
+  if (savedLiked) {
+    const likedIds = JSON.parse(savedLiked);
+    videos.forEach((video) => {
+      video.liked = likedIds.includes(video.id);
+    });
+  }
+
+  // Load history
+  const savedHistory = localStorage.getItem("TrenchessTube-history");
+  if (savedHistory) {
+    const historyIds = JSON.parse(savedHistory);
+    videos.forEach((video) => {
+      video.watched = historyIds.includes(video.id);
+    });
+  }
+  updateSubscriptionsSidebar();
+}
+
+      // Toggle sidebar visibility
+      function toggleSidebar() {
+        document.body.classList.toggle("collapsed-sidebar");
+        sidebarCollapsed = !sidebarCollapsed;
+      }
+
+      // Back to home
+      window.backToHome = function () {
+        showSection("home");
+      };
+
+      // Initialize
+      window.onload = function () {
+        loadFromLocalStorage();
+        loadVideos();
+        showSection("home");
+        updateSubscriptionsSidebar();
+
+        // Set up event listeners
+        document
+          .getElementById("search-input")
+          .addEventListener("keypress", function (e) {
+            if (e.key === "Enter") performSearch();
+          });
+
+        document
+          .getElementById("like-button")
+          .addEventListener("click", saveLikedVideos);
+        document
+          .getElementById("subscribe-button")
+          .addEventListener("click", saveSubscriptions);
+        document
+          .getElementById("save-button")
+          .addEventListener("click", saveWatchLater);
+
+        // On mobile, start with collapsed sidebar
+        if (window.innerWidth <= 768) {
+          document.body.classList.add("collapsed-sidebar");
+          sidebarCollapsed = true;
+        }
+      };
+
+      function updateSubscriptionsSidebar() {
+  const subscriptionsSidebar = document.querySelector('#subscriptions-sidebar');
+  subscriptionsSidebar.innerHTML = '<div class="sidebar-title">Subscriptions</div>';
+
+  // Получаем уникальные подписанные каналы
+  const subscribedChannels = [...new Set(
+    videos.filter(v => v.subscribed).map(v => v.channel)
+  )];
+
+  if (subscribedChannels.length === 0) {
+    const noSubs = document.createElement('div');
+    noSubs.className = 'sidebar-item';
+    noSubs.textContent = 'No subscriptions yet';
+    subscriptionsSidebar.appendChild(noSubs);
+    return;
+  }
+
+  // Добавляем каждый подписанный канал в сайдбар
+  subscribedChannels.forEach(channel => {
+    const channelItem = document.createElement('div');
+    channelItem.className = 'sidebar-channel';
+    channelItem.innerHTML = `
+      <img src="${getChannel(channel)}" alt="${channel}">
+      <span>${channel}</span>
+    `;
+    channelItem.addEventListener('click', () => {
+      // Показываем все видео этого канала
+      showChannelVideos(channel);
+    });
+    subscriptionsSidebar.appendChild(channelItem);
+  });
+}
+
+function showChannelVideos(channelName) {
+  // Скрываем все страницы
+  document.querySelectorAll('[id$="-page"]').forEach(el => {
+    el.style.display = 'none';
+  });
+  
+  // Создаем временный контейнер для видео канала
+  const container = document.createElement('div');
+  container.innerHTML = `
+    <h2>${channelName}</h2>
+    <div class="video-grid" id="channel-videos-grid"></div>
+  `;
+  
+  // Добавляем контейнер в main-content
+  const mainContent = document.querySelector('.main-content');
+  mainContent.appendChild(container);
+  
+  // Загружаем видео канала
+  const channelVideos = videos.filter(v => v.channel === channelName);
+  const grid = document.getElementById('channel-videos-grid');
+  grid.innerHTML = '';
+  
+  channelVideos.forEach(video => {
+    const videoCard = createVideoCard(video);
+    grid.appendChild(videoCard);
+  });
+}
+    </script>
+  
+
+</body></html>
